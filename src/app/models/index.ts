@@ -1,3 +1,3 @@
-export * from './geodata-state.model';
-export * from './map';
+export * from './geodata';
+export * from './location';
 export * from './geometry';
