@@ -34,15 +34,15 @@ function distanceToSegment(point, segmentStart, segmentEnd) {
     const dx = endX - startX;
     const dy = endY - startY;
     const lengthSquared = dx * dx + dy * dy;
-    const t =
+    const projectionRatio =
         lengthSquared === 0
             ? 0
             : Math.max(
                   0,
                   Math.min(1, ((pointX - startX) * dx + (pointY - startY) * dy) / lengthSquared),
               );
-    const closestX = startX + t * dx;
-    const closestY = startY + t * dy;
+    const closestX = startX + projectionRatio * dx;
+    const closestY = startY + projectionRatio * dy;
     return Math.hypot(pointX - closestX, pointY - closestY);
 }
 
