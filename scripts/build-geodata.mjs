@@ -67,7 +67,6 @@ const locationsWithExtras = {
     }),
 };
 
-console.log(`${DISPLAYED_CONTINENT} locations: ${locationsWithExtras.features.length} features`);
 writeGeoJSON('got_locations.geojson', locationsWithExtras);
 
 const landscape = readGeoJSON('got_landscape.geojson');
