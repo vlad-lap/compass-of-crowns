@@ -64,7 +64,6 @@ You are an expert in TypeScript, Angular, and scalable web application developme
 ## Map Architecture
 
 - The `map` route (`/map`) renders `AtlasMapComponent` via MapLibre GL — this is the current map
-- The `map-legacy` route (`/map-legacy`) renders `AtlasMapLegacyComponent` via amCharts 5 — kept until the MapLibre map is a verified full replacement
 - `@maplibre/ngx-maplibre-gl` exports a `MapComponent` that collides with the legacy component name; import it aliased: `import { MapComponent as MglMap } from '@maplibre/ngx-maplibre-gl'`
 - All geodata URLs are in `src/app/constants.ts` (`GEODATA_URLS`); sources and layers are declared in the template; paint/layout configs live in `src/app/components/map/configs.ts`
 

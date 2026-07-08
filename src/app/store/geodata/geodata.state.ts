@@ -1,11 +1,11 @@
-import { FeatureCollection, Feature, Point } from 'geojson';
+import { FeatureCollection, Feature, Point, Polygon, MultiPolygon } from 'geojson';
 import { Action, createSelector, State, StateContext } from '@ngxs/store';
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { GetGeodata } from './geodata.actions';
 import { Observable, tap } from 'rxjs';
 import { GEODATA_URLS } from '../../constants';
-import { Geometry, GeodataDict, GeodataType } from '../../models';
+import { GeodataDict, GeodataType } from '../../models';
 import { getCentralPoint } from '../../utils';
 
 const EMPTY: FeatureCollection<Point> = { type: 'FeatureCollection', features: [] };
@@ -40,7 +40,9 @@ export class GeodataState {
                         ...feature,
                         geometry: {
                             type: 'Point',
-                            coordinates: getCentralPoint(feature.geometry as Geometry),
+                            coordinates: getCentralPoint(
+                                feature.geometry as Polygon | MultiPolygon,
+                            ),
                         },
                     }));
 
