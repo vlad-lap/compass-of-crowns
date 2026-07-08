@@ -4,9 +4,16 @@ function pointInRing(point, ring) {
     for (let curr = 0, prev = ring.length - 1; curr < ring.length; prev = curr++) {
         const [currX, currY] = ring[curr];
         const [prevX, prevY] = ring[prev];
+
         const edgeCrossesHorizontal = currY > pointY !== prevY > pointY;
-        const intersectX = ((prevX - currX) * (pointY - currY)) / (prevY - currY) + currX;
-        if (edgeCrossesHorizontal && pointX < intersectX) {
+
+        const verticalRatio = (pointY - currY) / (prevY - currY);
+        const horizontalOffset = (prevX - currX) * verticalRatio;
+        const intersectX = currX + horizontalOffset;
+
+        const rayIntersectsEdge = edgeCrossesHorizontal && pointX < intersectX;
+
+        if (rayIntersectsEdge) {
             inside = !inside;
         }
     }
@@ -31,18 +38,18 @@ function distanceToSegment(point, segmentStart, segmentEnd) {
     const [pointX, pointY] = point;
     const [startX, startY] = segmentStart;
     const [endX, endY] = segmentEnd;
+
     const dx = endX - startX;
     const dy = endY - startY;
     const lengthSquared = dx * dx + dy * dy;
-    const projectionRatio =
-        lengthSquared === 0
-            ? 0
-            : Math.max(
-                  0,
-                  Math.min(1, ((pointX - startX) * dx + (pointY - startY) * dy) / lengthSquared),
-              );
-    const closestX = startX + projectionRatio * dx;
-    const closestY = startY + projectionRatio * dy;
+
+    const scalarProduct = (pointX - startX) * dx + (pointY - startY) * dy;
+    const projectionRatio = lengthSquared === 0 ? 0 : scalarProduct / lengthSquared;
+    const clampedProjectionRatio = Math.max(0, Math.min(1, projectionRatio));
+
+    const closestX = startX + clampedProjectionRatio * dx;
+    const closestY = startY + clampedProjectionRatio * dy;
+
     return Math.hypot(pointX - closestX, pointY - closestY);
 }
 
