@@ -2,15 +2,16 @@ import { LngLatLike } from 'maplibre-gl';
 
 export enum MapBounds {
     North = 43,
-    South = -40,
-    East = 100,
-    West = -60,
+    South = -42,
+    East = 92,
+    West = -10,
 }
 
 export const INITIAL_MAP_CENTER: LngLatLike = [15, 10];
 
 export enum ZoomLevel {
     Low = 3,
+    Initial = 3.75,
     Medium = 4.5,
     High = 6,
 }
@@ -18,6 +19,7 @@ export enum ZoomLevel {
 export const BLACK = '#333333';
 export const GREY = '#5d6d7e';
 export const ORANGE = '#ffa80d';
+export const RED = '#e53935';
 
 export enum LandscapeColor {
     Land = '#d2fade',

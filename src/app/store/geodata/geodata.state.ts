@@ -1,12 +1,13 @@
 import { FeatureCollection, Feature, Point, Polygon, MultiPolygon } from 'geojson';
-import { Action, createSelector, State, StateContext } from '@ngxs/store';
+import { Action, createSelector, Selector, State, StateContext } from '@ngxs/store';
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { GetGeodata } from './geodata.actions';
 import { Observable, tap } from 'rxjs';
 import { GEODATA_URLS } from '../../constants';
-import { GeodataDict, GeodataType } from '../../models';
-import { getCentralPoint } from '../../utils';
+import { FeatureData, GeodataDict, GeodataType } from '../../models';
+import { getCentralPoint, getLocationsSearchOptions, getSearchOptions } from '../../utils';
+import { flatten, mapValues, omit } from 'lodash';
 
 const EMPTY: FeatureCollection<Point> = { type: 'FeatureCollection', features: [] };
 
@@ -18,6 +19,18 @@ type GeodataStateModel = GeodataDict<FeatureCollection>;
 })
 @Injectable()
 export class GeodataState {
+    @Selector()
+    static searchOptions(state: GeodataStateModel): Record<string, FeatureData[]> {
+        const allOptionsDict = mapValues(state, value => getSearchOptions(value));
+        const locationsOptionsDict = getLocationsSearchOptions(
+            state.locations ?? ({} as FeatureCollection),
+        );
+        return {
+            ...omit(allOptionsDict, ['locations', 'kingdomBorders']),
+            ...locationsOptionsDict,
+        };
+    }
+
     static geodata(key: GeodataType) {
         return createSelector(
             [GeodataState],
@@ -49,6 +62,13 @@ export class GeodataState {
                 return { ...collection, features };
             },
         );
+    }
+
+    static byId(id: string) {
+        return createSelector([GeodataState], (state: GeodataStateModel): Feature => {
+            const allFeatures = Object.values(state).map(({ features }) => features);
+            return flatten(allFeatures).find(feature => feature.properties.id === id);
+        });
     }
 
     constructor(private http: HttpClient) {}
