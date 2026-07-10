@@ -243,7 +243,11 @@ export class MapPageComponent {
             (initialBounds, position) => initialBounds.extend(position as LngLatLike),
             new LngLatBounds(),
         );
-        this.map().mapInstance.fitBounds(bounds, { maxZoom: ZoomLevel.High, padding: 60 });
+        this.map().mapInstance.fitBounds(bounds, {
+            maxZoom: ZoomLevel.High,
+            padding: 60,
+            offset: this.hasHover ? [0, 0] : [0, -80],
+        });
         return bounds;
     }
 
