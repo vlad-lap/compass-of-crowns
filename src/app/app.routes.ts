@@ -3,16 +3,11 @@ import { mapResolver } from './resolvers';
 
 export const routes: Routes = [
     {
-        path: 'map',
+        path: '',
         loadComponent: () =>
-            import('./components/map/atlas-map.component').then(m => m.AtlasMapComponent),
+            import('./components/map-page/map-page.component').then(m => m.MapPageComponent),
         resolve: {
             data: mapResolver,
         },
-    },
-    {
-        path: '',
-        redirectTo: 'map',
-        pathMatch: 'full',
     },
 ];

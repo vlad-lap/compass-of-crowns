@@ -1,3 +1,8 @@
+<aif-map-search
+    (applySearch)="search($event)"
+    (resetSearch)="resetSearch()"
+/>
+
 <button
     matIconButton
     class="about-button"
@@ -134,6 +139,27 @@
         type="raster"
         source="north-gradient"
         [paint]="northGradientPaint"
-        before="cities-circle"
+        before="cities-label"
+    />
+
+    <mgl-geojson-source
+        id="search-highlight"
+        [data]="searchHighlight()"
+    />
+    <mgl-layer
+        id="search-highlight-line"
+        type="line"
+        source="search-highlight"
+        before="cities-label"
+        [paint]="searchHighlightLinePaint"
+        [layout]="{ visibility: searchHighlightLayerType() === 'line' ? 'visible' : 'none' }"
+    />
+    <mgl-layer
+        id="search-highlight-circle"
+        type="circle"
+        source="search-highlight"
+        before="cities-label"
+        [paint]="searchHighlightCirclePaint"
+        [layout]="{ visibility: searchHighlightLayerType() === 'circle' ? 'visible' : 'none' }"
     />
 </mgl-map>

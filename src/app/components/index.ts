@@ -1,1 +1,1 @@
-export * from './map/atlas-map.component';
+export * from './map-page/map-page.component';

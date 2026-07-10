@@ -18,6 +18,7 @@ export enum ZoomLevel {
 export const BLACK = '#333333';
 export const GREY = '#5d6d7e';
 export const ORANGE = '#ffa80d';
+export const RED = '#e53935';
 
 export enum LandscapeColor {
     Land = '#d2fade',

@@ -1,5 +1,6 @@
 import {
     CircleLayerSpecification,
+    DataDrivenPropertyValueSpecification,
     ExpressionSpecification,
     FillLayerSpecification,
     ImageSourceSpecification,
@@ -18,6 +19,7 @@ import {
     LocationColor,
     LocationRadius,
     MapBounds,
+    RED,
     ZoomLevel,
 } from './constants';
 import { GeodataDict, LocationDict } from '../../models';
@@ -106,22 +108,24 @@ export const LOCATIONS_MIN_ZOOM: LocationDict<ZoomLevel> = {
     other: ZoomLevel.High,
 };
 
+const POINT_CIRCLE_RADIUS: DataDrivenPropertyValueSpecification<number> = [
+    'match',
+    ['get', 'size'],
+    1,
+    LocationRadius.SM,
+    2,
+    LocationRadius.MD,
+    3,
+    LocationRadius.MD,
+    4,
+    LocationRadius.LG,
+    5,
+    LocationRadius.XL,
+    LocationRadius.MD,
+];
+
 export const POINTS_PAINT: CircleLayerSpecification['paint'] = {
-    'circle-radius': [
-        'match',
-        ['get', 'size'],
-        1,
-        LocationRadius.SM,
-        2,
-        LocationRadius.MD,
-        3,
-        LocationRadius.MD,
-        4,
-        LocationRadius.LG,
-        5,
-        LocationRadius.XL,
-        LocationRadius.MD,
-    ],
+    'circle-radius': POINT_CIRCLE_RADIUS,
     'circle-color': [
         'match',
         ['get', 'type'],
@@ -225,6 +229,20 @@ export const DEFAULT_WATER_LABEL_PAINT: SymbolLayerSpecification['paint'] = {
 
 export const DEFAULT_POINT_LABEL_PAINT: SymbolLayerSpecification['paint'] = {
     'text-color': LabelColor.Location,
+};
+
+export const SEARCH_HIGHLIGHT_LINE_PAINT: LineLayerSpecification['paint'] = {
+    'line-width': 8,
+    'line-color': RED,
+    'line-opacity': 0.6,
+};
+
+export const SEARCH_HIGHLIGHT_CIRCLE_PAINT: CircleLayerSpecification['paint'] = {
+    'circle-opacity': 0,
+    'circle-radius': POINT_CIRCLE_RADIUS,
+    'circle-stroke-color': RED,
+    'circle-stroke-width': 10,
+    'circle-stroke-opacity': 0.6,
 };
 
 export const LABEL_PAINT: Partial<GeodataDict<SymbolLayerSpecification['paint']>> = {

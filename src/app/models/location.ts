@@ -1,6 +1,10 @@
-export interface LocationData {
+export interface FeatureData {
     id: string;
     name: string;
+    searchKeys?: string[];
+}
+
+export interface LocationData extends FeatureData {
     type?: string;
     size?: number;
 }

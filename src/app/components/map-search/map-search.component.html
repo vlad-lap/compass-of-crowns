@@ -1,0 +1,36 @@
+<mat-form-field appearance="outline" subscriptSizing="dynamic">
+    <mat-icon matPrefix>search</mat-icon>
+    <input
+        matInput
+        placeholder="Search"
+        [formControl]="searchControl"
+        [matAutocomplete]="autocomplete"
+    />
+
+    @if (searchControl.value) {
+        <button
+            matIconButton
+            matSuffix
+            class="reset-button"
+            (click)="reset()"
+        >
+            <mat-icon>close</mat-icon>
+        </button>
+    }
+</mat-form-field>
+
+<mat-autocomplete
+    #autocomplete="matAutocomplete"
+    [displayWith]="displayFn"
+    hideSingleSelectionIndicator
+>
+    @let filteredOptions = filteredOptions$ | async | keyvalue: sortOptionsGroup;
+
+    @for (optionGroup of filteredOptions; track optionGroup.key) {
+        <mat-optgroup [label]="optionGroup.key | titlecase">
+            @for (option of optionGroup.value | sortBy: 'name'; track option.id) {
+                <mat-option [value]="option">{{ option.name }}</mat-option>
+            }
+        </mat-optgroup>
+    }
+</mat-autocomplete>
