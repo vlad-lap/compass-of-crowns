@@ -9,11 +9,11 @@ import {
 } from '@angular/router';
 import { filter } from 'rxjs';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { MatProgressSpinner } from '@angular/material/progress-spinner';
+import { SpinnerComponent } from './components/spinner/spinner.component';
 
 @Component({
     selector: 'cc-app-root',
-    imports: [RouterOutlet, MatProgressSpinner],
+    imports: [RouterOutlet, SpinnerComponent],
     templateUrl: './app.html',
     styleUrl: './app.scss',
 })
