@@ -49,14 +49,6 @@
     }
 
     <mgl-layer
-        id="mountains-pattern"
-        type="fill"
-        source="mountains"
-        [paint]="polygonsPattern.mountains"
-        before="mountains-outline"
-    />
-
-    <mgl-layer
         id="mountains-outline"
         type="line"
         source="mountains"
@@ -215,7 +207,7 @@
         source="search-highlight"
         before="cities-label"
         [paint]="searchHighlightLinePaint"
-        [layout]="{ visibility: searchHighlightLayerType() === 'line' ? 'visible' : 'none' }"
+        [layout]="searchHighlightLineLayout()"
     />
     <mgl-layer
         id="search-highlight-circle"

@@ -26,6 +26,7 @@ export enum LandscapeColor {
     Land = '#d2fade',
     Water = '#90d9ed',
     Forest = '#93cba2',
+    Swamp = '#bae8d6',
     Road = ORANGE,
     Wall = WHITE,
     KingdomBorder = GREY,

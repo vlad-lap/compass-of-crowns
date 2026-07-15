@@ -15,6 +15,7 @@ import {
     MapComponent,
 } from '@maplibre/ngx-maplibre-gl';
 import {
+    LineLayerSpecification,
     LngLatBounds,
     LngLatLike,
     Map,
@@ -61,8 +62,8 @@ import {
     POINTS_PAINT,
     POINTS_SHADOW,
     POLYGONS_PAINT,
-    POLYGONS_PATTERN,
     SEARCH_HIGHLIGHT_CIRCLE_PAINT,
+    SEARCH_HIGHLIGHT_LINE_LAYOUT,
     SEARCH_HIGHLIGHT_LINE_PAINT,
     SYMBOL_MARKER_LAYOUT,
     SYMBOL_MARKER_PAINT,
@@ -126,12 +127,16 @@ export class MapPageComponent {
         'lakes',
         'islands',
         'mountains',
+        'steppes',
+        'swamps',
         'forests',
     ];
     protected readonly lineTypes: LineGeodataType[] = ['kingdomBorders', 'rivers', 'roads'];
 
     protected readonly labeledTypes: GeodataType[] = [
         'mountains',
+        'steppes',
+        'swamps',
         'forests',
         'lakes',
         'islands',
@@ -145,7 +150,6 @@ export class MapPageComponent {
     );
 
     protected readonly polygonsPaint = POLYGONS_PAINT;
-    protected readonly polygonsPattern = POLYGONS_PATTERN;
 
     protected readonly mountainsOutlineLayout = MOUNTAINS_OUTLINE_LAYOUT;
     protected readonly mountainsOutlinePaint = MOUNTAINS_OUTLINE_PAINT;
@@ -180,6 +184,12 @@ export class MapPageComponent {
     protected readonly gradientCoordinates = GRADIENT_COORDINATES;
     protected readonly gradientPaint = GRADIENT_PAINT;
 
+    protected readonly searchHighlightLineLayout = computed<LineLayerSpecification['layout']>(
+        () => ({
+            ...SEARCH_HIGHLIGHT_LINE_LAYOUT,
+            visibility: this.searchHighlightLayerType() === 'line' ? 'visible' : 'none',
+        }),
+    );
     protected readonly searchHighlightLinePaint = SEARCH_HIGHLIGHT_LINE_PAINT;
     protected readonly searchHighlightCirclePaint = SEARCH_HIGHLIGHT_CIRCLE_PAINT;
 

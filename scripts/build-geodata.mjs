@@ -6,6 +6,7 @@ import { splitByType } from './split-by-type.mjs';
 import { filterGeodata } from './filter-geodata.mjs';
 import { generateIds } from './generate-ids.mjs';
 import { buildKingdomBorders } from './build-kingdom-borders.mjs';
+import { smoothPolygon } from './smooth.mjs';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const VENDORS = join(__dirname, '..', 'vendors');
@@ -60,5 +61,9 @@ const landscape = readGeoJSON('got_landscape.geojson');
 const landscapeByType = splitByType(landscape);
 
 for (const [type, collection] of Object.entries(landscapeByType)) {
-    writeGeoJSON(`got_landscape_${type.toLowerCase()}.geojson`, collection);
+    const smoothed = {
+        ...collection,
+        features: collection.features.map(smoothPolygon),
+    };
+    writeGeoJSON(`got_landscape_${type.toLowerCase()}.geojson`, smoothed);
 }
