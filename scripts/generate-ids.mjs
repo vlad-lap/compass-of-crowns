@@ -17,14 +17,14 @@ function generateId(feature) {
     return idParts.filter(Boolean).join('-');
 }
 
-export function generateIds(data) {
-    if (!data) {
+export function generateIds(collection) {
+    if (!collection) {
         return null;
     }
 
     return {
-        ...data,
-        features: data.features.map(feature => ({
+        ...collection,
+        features: collection.features.map(feature => ({
             ...feature,
             properties: { ...feature.properties, id: generateId(feature) },
         })),

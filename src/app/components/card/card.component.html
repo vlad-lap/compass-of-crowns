@@ -1,0 +1,28 @@
+<div class="card-header">
+    <h3>{{ data.name }}</h3>
+    <button
+        matIconButton
+        aria-label="Close"
+        (click)="close()"
+    >
+        <mat-icon>close</mat-icon>
+    </button>
+</div>
+
+<div class="card-subtitle">
+    @if (data.type) {
+        <span>{{ data.type }}</span>
+    }
+
+    @if (area?.length) {
+        <span class="bullet">&bull;</span>
+    }
+
+    @for (areaPart of area; track areaPart; let last = $last) {
+        <span>{{ areaPart }}</span>
+
+        @if (!last) {
+            <span>, </span>
+        }
+    }
+</div>

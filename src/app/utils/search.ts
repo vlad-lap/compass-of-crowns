@@ -49,14 +49,16 @@ export function matchesSearch(searchKeys: string[], query: string): boolean {
 
     return searchKeys.some(searchKey => {
         const nameWords = searchKey.split(/\s+/);
+        const nameStartIndex = nameWords.findIndex(word => word.startsWith(queryWords[0]));
 
         if (queryWords.length === 1) {
-            return nameWords.some(word => word.startsWith(queryWords[0]));
+            return nameStartIndex !== -1;
         }
 
         return (
             queryWords.length <= nameWords.length &&
-            queryWords.every((queryWord, i) => nameWords[i].startsWith(queryWord))
+            nameStartIndex !== -1 &&
+            queryWords.every((queryWord, i, ) => nameWords[nameStartIndex + i]?.startsWith(queryWord))
         );
     });
 }

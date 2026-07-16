@@ -1,0 +1,21 @@
+@use '../../../variables';
+
+.tooltip {
+    max-width: 180px;
+}
+
+.tooltip-title {
+    font-size: 14px;
+    color: variables.$black;
+    margin: 0;
+}
+
+.tooltip-subtitle {
+    font-size: 11px;
+    line-height: 14px;
+    color: variables.$grey;
+}
+
+.bullet {
+    margin: 0 4px;
+}

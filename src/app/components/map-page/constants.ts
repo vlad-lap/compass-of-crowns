@@ -10,9 +10,9 @@ export enum MapBounds {
 export const INITIAL_MAP_CENTER: LngLatLike = [15, 10];
 
 export enum ZoomLevel {
-    Low = 3,
     Initial = 3.4,
-    Medium = 4.5,
+    Low = 4,
+    Medium = 5,
     High = 6,
 }
 
@@ -26,6 +26,7 @@ export enum LandscapeColor {
     Water = '#90d9ed',
     Forest = '#93cba2',
     Swamp = '#bae8d6',
+    Desert = '#fddc96',
     Road = '#ffa80d',
     Wall = WHITE,
     KingdomBorder = GREY,
@@ -36,7 +37,6 @@ export enum LabelColor {
     Water = '#1a6b8a',
     Mountain = '#5a4208',
     Road = '#bd7c05',
-    Kingdom = GREY,
     Wall = BLACK,
     Location = BLACK,
 }
@@ -56,7 +56,7 @@ export const TOUCH_HIT_RADIUS_PX = 15;
 
 export const MOUNTAIN_PATTERN_ID = 'mountain-pattern';
 
-export const TOOLTIP_LAYER_IDS = [
+export const SELECTABLE_LAYER_IDS = [
     'cities-point',
     'towns-point',
     'greatCastles-point',
@@ -73,7 +73,8 @@ export enum FontStyle {
 }
 
 export enum FontSize {
-    Small = 9,
-    Medium = 12,
-    Large = 14,
+    SM = 9,
+    MD = 12,
+    LG = 14,
+    XL = 18,
 }

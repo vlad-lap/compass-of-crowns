@@ -1,0 +1,29 @@
+@use '../../../variables';
+
+:host {
+    display: block;
+    margin: {
+        top: 4px;
+        bottom: 12px;
+    }
+}
+
+.card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+
+    h3 {
+        margin: 0;
+    }
+}
+
+.card-subtitle {
+    font-size: 14px;
+    color: variables.$grey;
+}
+
+.bullet {
+    margin: 0 4px;
+}
