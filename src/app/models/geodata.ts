@@ -1,5 +1,16 @@
 export type PolygonGeodataType =
-    'continents' | 'kingdoms' | 'islands' | 'mountains' | 'forests' | 'steppes' | 'swamps' | 'lakes';
+    'continents'
+    | 'kingdoms'
+    | 'lands'
+    | 'shores'
+    | 'islands'
+    | 'mountains'
+    | 'forests'
+    | 'deserts'
+    | 'steppes'
+    | 'swamps'
+    | 'lakes'
+    | 'seas';
 
 export type LineGeodataType = 'rivers' | 'kingdomBorders' | 'roads' | 'wall';
 

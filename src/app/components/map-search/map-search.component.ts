@@ -1,4 +1,12 @@
-import { ChangeDetectionStrategy, Component, DestroyRef, OnInit, output } from '@angular/core';
+import {
+    ChangeDetectionStrategy,
+    Component,
+    DestroyRef,
+    ElementRef,
+    OnInit,
+    output,
+    viewChild,
+} from '@angular/core';
 import { MatInput } from '@angular/material/input';
 import { MatIcon } from '@angular/material/icon';
 import {
@@ -30,15 +38,21 @@ const OPTIONS_GROUP_ORDER: OptionGroup[] = [
     'other',
 
     'kingdoms',
+    'lands',
     'wall',
     'roads',
 
     'continents',
     'islands',
+    'seas',
     'rivers',
     'lakes',
     'mountains',
     'forests',
+    'shores',
+    'steppes',
+    'swamps',
+    'deserts',
 ];
 
 @Component({
@@ -61,8 +75,10 @@ const OPTIONS_GROUP_ORDER: OptionGroup[] = [
     styleUrl: './map-search.component.scss',
 })
 export class MapSearchComponent implements OnInit {
-    applySearch = output<FeatureData>();
-    resetSearch = output<void>();
+    readonly applySearch = output<FeatureData>();
+    readonly resetSearch = output<void>();
+
+    readonly searchInput = viewChild('searchInput', { read: ElementRef });
 
     readonly options = this.store.selectSnapshot(GeodataState.searchOptions);
     readonly searchControl = new FormControl<FeatureData | string>('');
@@ -88,6 +104,7 @@ export class MapSearchComponent implements OnInit {
             .pipe(startWith(this.searchControl.value), takeUntilDestroyed(this.destroyRef))
             .subscribe(value => {
                 if (this.isFeatureData(value)) {
+                    queueMicrotask(() => this.searchInput().nativeElement.blur());
                     this.applySearch.emit(value);
                 } else if (!value) {
                     this.resetSearch.emit();

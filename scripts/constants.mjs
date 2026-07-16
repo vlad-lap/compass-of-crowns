@@ -1,6 +1,3 @@
-export const CONTINENT_KEY = 'continent';
-export const DISPLAYED_CONTINENT = 'Westeros';
-
 export const GREAT_CASTLES = [
     'Winterfell',
     'Riverrun',
@@ -16,7 +13,15 @@ export const GREAT_CASTLES = [
 export const EXTRA_LOCATIONS = [
     {
         type: 'Feature',
-        properties: { name: 'Casterly Rock', size: 3, confirmed: 1, type: 'Castle' },
+        properties: {
+            id: 'castle-casterly-rock',
+            name: 'Casterly Rock',
+            size: 4,
+            confirmed: 1,
+            type: 'Castle'
+        },
         geometry: { type: 'Point', coordinates: [7.305359863219508, 5.4727566272357535] },
     },
 ];
+
+export const EXCLUDED_IDS = ['desert-the-dothraki-sea', 'water-iron-islands'];

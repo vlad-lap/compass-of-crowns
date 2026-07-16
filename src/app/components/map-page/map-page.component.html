@@ -31,9 +31,12 @@
     [maxZoom]="9"
     [maxBounds]="maxBounds"
     [dragRotate]="false"
+    [cursorStyle]="cursorStyle()"
     (zoomEvt)="onMapZoom($event)"
     (mapLoad)="onMapLoad($event)"
     (mapClick)="onMapClick($event)"
+    (mapDragStart)="onMapDragStart()"
+    (mapDragEnd)="onMapDragEnd()"
 >
     @for (polygonType of polygonTypes; track polygonType) {
         <mgl-geojson-source
@@ -63,7 +66,7 @@
         source="mountains"
         [layout]="mountainsOutlineLayout"
         [paint]="mountainsOutlinePaint.blur"
-        before="forests-fill"
+        before="steppes-fill"
     />
 
     @for (lineType of lineTypes; track lineType) {
@@ -107,11 +110,25 @@
             [id]="labeledType + '-label'"
             type="symbol"
             [source]="labeledType"
-            [layout]="labelLayout[labeledType]"
+            [layout]="labelLayout[labeledType] || defaultLabelLayout"
             [paint]="labelPaint[labeledType]"
             [minzoom]="labelsMinZoom[labeledType] || 0"
         />
     }
+
+    <mgl-geojson-source
+        id="continents-label-points"
+        [data]="continentsLabelPoints()"
+    />
+    <mgl-layer
+        id="continents-label"
+        type="symbol"
+        source="continents-label-points"
+        [layout]="labelLayout.continents"
+        [paint]="labelPaint.continents"
+        [maxzoom]="ZoomLevel.Low"
+        before="kingdoms-label"
+    />
 
     <mgl-geojson-source
         id="kingdoms-label-points"
@@ -123,8 +140,9 @@
         source="kingdoms-label-points"
         [layout]="labelLayout.kingdoms"
         [paint]="labelPaint.kingdoms"
+        [minzoom]="ZoomLevel.Low"
         [maxzoom]="ZoomLevel.Medium"
-        before="north-gradient-layer"
+        before="lands-label"
     />
 
     <mgl-geojson-source
@@ -193,9 +211,21 @@
                 type="raster"
                 [source]="gradient.key + '-gradient'"
                 [paint]="gradientPaint"
-                before="cities-label"
             />
     }
+
+    <mgl-geojson-source
+        id="dim-overlay"
+        [data]="dimOverlay()"
+    />
+    <mgl-layer
+        id="dim-overlay-layer"
+        type="fill"
+        source="dim-overlay"
+        before="north-gradient-layer"
+        [paint]="dimOverlayPaint"
+        [layout]="searchHighlightPolygonLayout()"
+    />
 
     <mgl-geojson-source
         id="search-highlight"
@@ -213,7 +243,7 @@
         id="search-highlight-point"
         type="circle"
         source="search-highlight"
-        before="cities-label"
+        before="cities-point"
         [paint]="searchHighlightPointPaint"
         [layout]="searchHighPointLayout()"
     />

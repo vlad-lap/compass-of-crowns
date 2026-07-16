@@ -23,6 +23,7 @@ import {
     RED,
     ZoomLevel,
     SymbolMarkerSize,
+    GREY,
 } from './constants';
 import { GeodataDict, LocationDict } from '../../models';
 
@@ -97,12 +98,25 @@ export const POLYGONS_PAINT: GeodataDict<FillLayerSpecification['paint']> = {
     steppes: {
         'fill-opacity': 0,
     },
+    deserts: {
+        'fill-color': LandscapeColor.Desert,
+        'fill-opacity': 0.3,
+    },
     swamps: {
         'fill-color': LandscapeColor.Swamp,
         'fill-opacity': 0.5,
     },
     lakes: {
         'fill-color': LandscapeColor.Water,
+    },
+    seas: {
+        'fill-opacity': 0,
+    },
+    shores: {
+        'fill-opacity': 0,
+    },
+    lands: {
+        'fill-opacity': 0,
     },
 };
 
@@ -259,37 +273,42 @@ export const SYMBOL_MARKER_PAINT: SymbolLayerSpecification['paint'] = {
 };
 
 export const LABELS_MIN_ZOOM: GeodataDict<ZoomLevel> = {
+    shores: ZoomLevel.Medium,
+    lands: ZoomLevel.Low,
     mountains: ZoomLevel.Medium,
     forests: ZoomLevel.Medium,
+    steppes: ZoomLevel.Low,
+    swamps: ZoomLevel.Low,
+    deserts: ZoomLevel.Low,
     islands: ZoomLevel.Medium,
-    lakes: ZoomLevel.Medium,
+    lakes: ZoomLevel.Low,
     rivers: ZoomLevel.Low,
     roads: ZoomLevel.Medium,
 };
 
-const DEFAULT_LABEL_LAYOUT: SymbolLayerSpecification['layout'] = {
+export const DEFAULT_LABEL_LAYOUT: SymbolLayerSpecification['layout'] = {
     'text-field': ['get', 'name'],
     'text-font': [FontStyle.Italic],
     'text-size': [
         'match',
         ['get', 'size'],
         1,
-        FontSize.Small,
+        FontSize.SM,
         2,
-        FontSize.Small,
+        FontSize.SM,
         3,
-        FontSize.Medium,
+        FontSize.MD,
         4,
-        FontSize.Medium,
+        FontSize.MD,
         5,
-        FontSize.Large,
-        FontSize.Medium,
+        FontSize.LG,
+        FontSize.MD,
     ]
 };
 
 const DEFAULT_LINE_LABEL_LAYOUT: SymbolLayerSpecification['layout'] = {
     ...DEFAULT_LABEL_LAYOUT,
-    'text-size': FontSize.Small,
+    'text-size': FontSize.SM,
     'symbol-placement': 'line-center',
 };
 
@@ -309,29 +328,31 @@ const DEFAULT_POINT_LABEL_LAYOUT: SymbolLayerSpecification['layout'] = {
     'text-size': [
         'case',
         LOCATIONS_FILTER.cities,
-        FontSize.Large,
+        FontSize.LG,
         LOCATIONS_FILTER.greatCastles,
-        FontSize.Large,
-        FontSize.Medium,
+        FontSize.LG,
+        FontSize.MD,
     ],
 };
 
 export const LABEL_LAYOUT: Partial<GeodataDict<SymbolLayerSpecification['layout']>> = {
-    mountains: DEFAULT_LABEL_LAYOUT,
-    forests: DEFAULT_LABEL_LAYOUT,
-    steppes: DEFAULT_LABEL_LAYOUT,
-    swamps: DEFAULT_LABEL_LAYOUT,
+    continents: {
+        ...DEFAULT_LABEL_LAYOUT,
+        'text-size': FontSize.XL,
+        'text-variable-anchor': ['bottom', 'top', 'left', 'right'],
+        'text-justify': 'auto',
+    },
     lakes: {
         ...DEFAULT_LABEL_LAYOUT,
-        'text-size': FontSize.Small,
+        'text-size': FontSize.SM,
     },
     islands: {
         ...DEFAULT_LABEL_LAYOUT,
-        'text-size': FontSize.Small,
+        'text-size': FontSize.SM,
     },
     kingdoms: {
         ...DEFAULT_LABEL_LAYOUT,
-        'text-size': FontSize.Large,
+        'text-size': FontSize.LG,
         'text-variable-anchor': ['bottom', 'top', 'left', 'right'],
         'text-justify': 'auto',
     },
@@ -343,43 +364,44 @@ export const LABEL_LAYOUT: Partial<GeodataDict<SymbolLayerSpecification['layout'
     wall: {
         ...DEFAULT_LINE_LABEL_LAYOUT,
         'text-font': [FontStyle.Bold],
-        'text-size': FontSize.Large,
+        'text-size': FontSize.LG,
     },
     locations: DEFAULT_POINT_LABEL_LAYOUT,
 };
 
-export const DEFAULT_LABEL_PAINT: SymbolLayerSpecification['paint'] = {
+const DEFAULT_LABEL_PAINT: SymbolLayerSpecification['paint'] = {
     'text-halo-color': WHITE,
     'text-halo-width': 1,
+    'text-color': GREY,
 };
 
-export const DEFAULT_LAND_LABEL_PAINT: SymbolLayerSpecification['paint'] = {
+const DEFAULT_LAND_LABEL_PAINT: SymbolLayerSpecification['paint'] = {
     ...DEFAULT_LABEL_PAINT,
     'text-color': LabelColor.Land,
 };
 
-export const DEFAULT_WATER_LABEL_PAINT: SymbolLayerSpecification['paint'] = {
+const DEFAULT_WATER_LABEL_PAINT: SymbolLayerSpecification['paint'] = {
     ...DEFAULT_LABEL_PAINT,
     'text-color': LabelColor.Water,
 };
 
-export const DEFAULT_POINT_LABEL_PAINT: SymbolLayerSpecification['paint'] = {
-    ...DEFAULT_LABEL_PAINT,
-    'text-color': LabelColor.Location,
-};
-
 export const LABEL_PAINT: Partial<GeodataDict<SymbolLayerSpecification['paint']>> = {
-    mountains: { ...DEFAULT_LABEL_PAINT, 'text-color': LabelColor.Mountain },
+    kingdoms: DEFAULT_LABEL_PAINT,
+    lands: DEFAULT_LABEL_PAINT,
+    shores: DEFAULT_LABEL_PAINT,
+    continents: DEFAULT_LAND_LABEL_PAINT,
+    islands: DEFAULT_LAND_LABEL_PAINT,
     forests: DEFAULT_LAND_LABEL_PAINT,
     steppes: DEFAULT_LAND_LABEL_PAINT,
     swamps: DEFAULT_LAND_LABEL_PAINT,
     lakes: DEFAULT_WATER_LABEL_PAINT,
-    islands: DEFAULT_LAND_LABEL_PAINT,
-    kingdoms: { ...DEFAULT_LABEL_PAINT, 'text-color': LabelColor.Kingdom },
+    seas: DEFAULT_WATER_LABEL_PAINT,
     rivers: DEFAULT_WATER_LABEL_PAINT,
+    mountains: { ...DEFAULT_LABEL_PAINT, 'text-color': LabelColor.Mountain },
+    deserts: { ...DEFAULT_LABEL_PAINT, 'text-color': LabelColor.Mountain },
     roads: { ...DEFAULT_LABEL_PAINT, 'text-color': LabelColor.Road },
     wall: { ...DEFAULT_LABEL_PAINT, 'text-color': LabelColor.Wall },
-    locations: DEFAULT_POINT_LABEL_PAINT,
+    locations: { ...DEFAULT_LABEL_PAINT, 'text-color': LabelColor.Location },
 };
 
 export const SEARCH_HIGHLIGHT_LINE_LAYOUT: LineLayerSpecification['layout'] = {
@@ -399,4 +421,9 @@ export const SEARCH_HIGHLIGHT_CIRCLE_PAINT: CircleLayerSpecification['paint'] = 
     'circle-stroke-color': RED,
     'circle-stroke-width': 10,
     'circle-stroke-opacity': 0.6,
+};
+
+export const DIM_OVERLAY_PAINT: FillLayerSpecification['paint'] = {
+    'fill-color': BLACK,
+    'fill-opacity': 0.4,
 };

@@ -1,7 +1,7 @@
-export function splitByType(geodata) {
-    const byType = Map.groupBy(geodata.features, f => f.properties.type);
+export function splitByType(collection) {
+    const byType = Map.groupBy(collection.features, f => f.properties.type);
 
     return Object.fromEntries(
-        [...byType.entries()].map(([type, features]) => [type, { ...geodata, features }]),
+        [...byType.entries()].map(([type, features]) => [type, { ...collection, features }]),
     );
 }
