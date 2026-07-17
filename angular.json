@@ -35,6 +35,11 @@
                                 "glob": "**/*",
                                 "input": "geodata",
                                 "output": "geodata"
+                            },
+                            {
+                                "glob": "**/*",
+                                "input": "data",
+                                "output": "data"
                             }
                         ],
                         "styles": [

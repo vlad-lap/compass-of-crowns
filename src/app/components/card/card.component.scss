@@ -27,8 +27,13 @@
 .card-subtitle {
     font-size: 14px;
     color: variables.$grey;
+    margin-bottom: 12px;
 }
 
 .bullet {
     margin: 0 4px;
+}
+
+.description {
+    max-width: 640px;
 }

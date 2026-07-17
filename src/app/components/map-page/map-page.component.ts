@@ -357,7 +357,7 @@ export class MapPageComponent {
         mapInstance.fitBounds(bounds, {
             maxZoom: ZoomLevel.High + 0.5,
             padding: 60,
-            offset: [0, -25],
+            offset: [0, -55],
         });
     }
 
