@@ -178,4 +178,11 @@ writeRawDataJSON('the-wall.json', wallData);
 const locationsData = locationsWithExtras.features.map(getRawData);
 writeRawDataJSON('locations.json', locationsData);
 
+const descriptionsDict = [...wallData, ...locationsData]
+    .filter(({ name }) => !!name)
+    .reduce((dict, { id, description }) => ({
+        ...dict, [id]: description
+    }), {});
+writeJSON(join(DATA, 'descriptions.json'), descriptionsDict);
+
 

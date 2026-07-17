@@ -2,7 +2,7 @@
 @let locationArea = locationData | area;
 
 <div class="tooltip">
-    <h5 class="tooltip-title">{{ locationData.name }}</h5>
+    <h5 class="tooltip-title">{{ locationData.name || 'Unknown' }}</h5>
 
     <div class="tooltip-subtitle">
         @if (locationData.type) {

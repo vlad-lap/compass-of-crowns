@@ -278,7 +278,7 @@ export class MapPageComponent {
         }
 
         const feature = features?.[0];
-        if (!feature?.properties?.name) {
+        if (!feature) {
             return;
         }
 
