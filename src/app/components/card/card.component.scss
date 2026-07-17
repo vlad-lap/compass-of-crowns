@@ -10,12 +10,17 @@
 
 .card-header {
     display: flex;
-    justify-content: space-between;
+    gap: 4px;
     align-items: center;
     margin-bottom: 12px;
 
     h3 {
         margin: 0;
+        flex-grow: 1;
+    }
+
+    .mat-icon.share-icon {
+        bottom: 2px;
     }
 }
 

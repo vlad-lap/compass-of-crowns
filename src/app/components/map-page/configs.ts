@@ -22,8 +22,8 @@ import {
     MOUNTAIN_PATTERN_ID,
     RED,
     ZoomLevel,
-    SymbolMarkerSize,
     GREY,
+    LIGHT_GREY,
 } from './constants';
 import { GeodataDict, LocationDict } from '../../models';
 
@@ -89,7 +89,7 @@ export const POLYGONS_PAINT: GeodataDict<FillLayerSpecification['paint']> = {
     },
     mountains: {
         'fill-pattern': MOUNTAIN_PATTERN_ID,
-        'fill-opacity': 0.15,
+        'fill-opacity': 0.2,
     },
     forests: {
         'fill-color': LandscapeColor.Forest,
@@ -100,7 +100,7 @@ export const POLYGONS_PAINT: GeodataDict<FillLayerSpecification['paint']> = {
     },
     deserts: {
         'fill-color': LandscapeColor.Desert,
-        'fill-opacity': 0.3,
+        'fill-opacity': 0.45,
     },
     swamps: {
         'fill-color': LandscapeColor.Swamp,
@@ -163,6 +163,13 @@ export const LINES_PAINT: GeodataDict<LineLayerSpecification['paint']> = {
         'line-color': LandscapeColor.KingdomBorder,
         'line-dasharray': [4, 4],
         'line-opacity': 0.6,
+    },
+};
+
+export const LINES_OUTLINE: GeodataDict<LineLayerSpecification['paint']> = {
+    wall: {
+        'line-color': BLACK,
+        'line-width': 5,
     },
 };
 
@@ -237,8 +244,8 @@ const POINT_SHADOW_RADIUS: DataDrivenPropertyValueSpecification<number> = [
 
 export const POINTS_PAINT: CircleLayerSpecification['paint'] = {
     'circle-radius': POINT_CIRCLE_RADIUS,
-    'circle-color': WHITE,
-    'circle-stroke-color': BLACK,
+    'circle-color': ['case', LOCATIONS_FILTER.ruins, LIGHT_GREY, WHITE],
+    'circle-stroke-color': ['case', LOCATIONS_FILTER.ruins, GREY, BLACK],
     'circle-stroke-width': 1,
 };
 
@@ -248,28 +255,6 @@ export const POINTS_SHADOW: CircleLayerSpecification['paint'] = {
     'circle-opacity': 0.3,
     'circle-blur': 0.8,
     'circle-translate': [1.5, 1.5],
-};
-
-const SYMBOL_MARKER_SIZE: DataDrivenPropertyValueSpecification<number> = [
-    'match',
-    ['get', 'size'],
-    1,
-    SymbolMarkerSize.SM,
-    SymbolMarkerSize.LG,
-];
-
-export const SYMBOL_MARKER_LAYOUT: SymbolLayerSpecification['layout'] = {
-    'text-field': '×',
-    'text-font': [FontStyle.Bold],
-    'text-size': SYMBOL_MARKER_SIZE,
-    'text-allow-overlap': true,
-    'text-ignore-placement': true,
-};
-
-export const SYMBOL_MARKER_PAINT: SymbolLayerSpecification['paint'] = {
-    'text-color': BLACK,
-    'text-halo-color': WHITE,
-    'text-halo-width': 1,
 };
 
 export const LABELS_MIN_ZOOM: GeodataDict<ZoomLevel> = {
@@ -401,7 +386,10 @@ export const LABEL_PAINT: Partial<GeodataDict<SymbolLayerSpecification['paint']>
     deserts: { ...DEFAULT_LABEL_PAINT, 'text-color': LabelColor.Mountain },
     roads: { ...DEFAULT_LABEL_PAINT, 'text-color': LabelColor.Road },
     wall: { ...DEFAULT_LABEL_PAINT, 'text-color': LabelColor.Wall },
-    locations: { ...DEFAULT_LABEL_PAINT, 'text-color': LabelColor.Location },
+    locations: {
+        ...DEFAULT_LABEL_PAINT,
+        'text-color': ['case', LOCATIONS_FILTER.ruins, LabelColor.Ruin, LabelColor.Location],
+    },
 };
 
 export const SEARCH_HIGHLIGHT_LINE_LAYOUT: LineLayerSpecification['layout'] = {
@@ -410,9 +398,9 @@ export const SEARCH_HIGHLIGHT_LINE_LAYOUT: LineLayerSpecification['layout'] = {
 }
 
 export const SEARCH_HIGHLIGHT_LINE_PAINT: LineLayerSpecification['paint'] = {
-    'line-width': 8,
+    'line-width': 9,
     'line-color': RED,
-    'line-opacity': 0.6,
+    'line-opacity': 0.7,
 };
 
 export const SEARCH_HIGHLIGHT_CIRCLE_PAINT: CircleLayerSpecification['paint'] = {
@@ -420,10 +408,10 @@ export const SEARCH_HIGHLIGHT_CIRCLE_PAINT: CircleLayerSpecification['paint'] = 
     'circle-radius': POINT_CIRCLE_RADIUS,
     'circle-stroke-color': RED,
     'circle-stroke-width': 10,
-    'circle-stroke-opacity': 0.6,
+    'circle-stroke-opacity': 0.7,
 };
 
 export const DIM_OVERLAY_PAINT: FillLayerSpecification['paint'] = {
     'fill-color': BLACK,
-    'fill-opacity': 0.4,
+    'fill-opacity': 0.15,
 };

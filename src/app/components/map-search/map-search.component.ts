@@ -28,6 +28,8 @@ import { SortByPipe } from '../../pipes';
 import { matchesSearch } from '../../utils';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, Router } from '@angular/router';
+import { Title } from '@angular/platform-browser';
+import { APP_TITLE } from '../../constants';
 
 type OptionGroup = GeodataType | LocationType;
 
@@ -100,6 +102,7 @@ export class MapSearchComponent implements OnInit {
         private router: Router,
         private route: ActivatedRoute,
         private destroyRef: DestroyRef,
+        private title: Title,
     ) {}
 
     ngOnInit(): void {
@@ -107,12 +110,9 @@ export class MapSearchComponent implements OnInit {
             .pipe(startWith(this.searchControl.value), takeUntilDestroyed(this.destroyRef))
             .subscribe(value => {
                 if (this.isFeatureData(value)) {
-                    queueMicrotask(() => this.searchInput().nativeElement.blur());
-                    this.applySearch.emit(value);
-                    this.setQueryParams(value);
+                    this.search(value);
                 } else if (!value) {
-                    this.resetSearch.emit();
-                    this.setQueryParams(null);
+                    this.reset();
                 }
             });
 
@@ -128,10 +128,6 @@ export class MapSearchComponent implements OnInit {
         this.searchControl.patchValue(selectedOption);
     }
 
-    reset(): void {
-        this.searchControl.reset('');
-    }
-
     displayFn(option: FeatureData): string {
         return option?.name;
     }
@@ -143,11 +139,29 @@ export class MapSearchComponent implements OnInit {
         return OPTIONS_GROUP_ORDER.indexOf(key1) - OPTIONS_GROUP_ORDER.indexOf(key2);
     }
 
+    private search(value: FeatureData): void {
+        queueMicrotask(() => this.searchInput().nativeElement.blur());
+        this.applySearch.emit(value);
+        this.setQueryParams(value);
+        this.setTitle(value);
+    }
+
+    private reset(): void {
+        this.resetSearch.emit();
+        this.setQueryParams(null);
+        this.setTitle(null);
+    }
+
     private setQueryParams(value: FeatureData): void {
         this.router.navigate([], {
             relativeTo: this.route,
             queryParams: value ? { selected: value.id } : {},
         });
+    }
+
+    private setTitle(value: FeatureData): void {
+        const title = value ? `${value.name} | ${APP_TITLE}` : APP_TITLE;
+        this.title.setTitle(title);
     }
 
     private matchesSearch({ searchKeys }: FeatureData): boolean {

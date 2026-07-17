@@ -1,16 +1,19 @@
+@let locationData = location();
+@let locationArea = locationData | area;
+
 <div class="tooltip">
-    <h5 class="tooltip-title">{{ location().name }}</h5>
+    <h5 class="tooltip-title">{{ locationData.name }}</h5>
 
     <div class="tooltip-subtitle">
-        @if (location().type) {
-            <span>{{ location().type }}</span>
+        @if (locationData.type) {
+            <span>{{ locationData.type }}</span>
+
+            @if (locationArea?.length) {
+                <span class="bullet">&bull;</span>
+            }
         }
 
-        @if (area()?.length) {
-            <span class="bullet">&bull;</span>
-        }
-
-        @for (areaPart of area(); track areaPart; let last = $last) {
+        @for (areaPart of locationArea; track areaPart; let last = $last) {
             <span>{{ areaPart }}</span>
 
             @if (!last) {

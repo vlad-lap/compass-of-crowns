@@ -50,7 +50,6 @@ writeGeoJSON('got_political_borders.geojson', borders);
 processGeoJSON('got_lakes.geojson');
 processGeoJSON('got_rivers.geojson');
 processGeoJSON('got_roads.geojson');
-processGeoJSON('got_wall.geojson');
 
 const landscape = readGeoJSON('got_landscape.geojson');
 const landscapeByType = splitByType(landscape);
@@ -100,6 +99,19 @@ for (const [type, collection] of Object.entries({ ...landscapeByType, ...regions
         writeGeoJSON(`got_${lowercased}.geojson`, smoothed);
     }
 }
+
+processGeoJSON('got_wall.geojson', {
+    mapFn: feature => ({
+        ...feature,
+        properties: {
+            ...feature.properties,
+            continentId: getLocationContinentId(feature, continents, islands),
+            kingdomId: getContainingPolygonId(feature, kingdoms),
+            regionId: getContainingPolygonId(feature, namedRegions),
+            islandId: getContainingPolygonId(feature, islands),
+        },
+    }),
+});
 
 const locations = readGeoJSON('got_locations.geojson');
 const locationsWithExtras = {

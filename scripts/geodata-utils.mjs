@@ -1,4 +1,4 @@
-import { pointInPolygon } from './point-in-polygon.mjs';
+import { lineInPolygon, pointInPolygon } from './point-in-polygon.mjs';
 
 export function filterGeodata(collection, filterFn) {
     if (!collection) {
@@ -31,9 +31,16 @@ export function addContinentId(feature, continents) {
     return { ...feature, properties };
 }
 
-export function findPolygonContaining(location, collection) {
-    const point = location.geometry.coordinates;
-    return collection.features.find(feature => pointInPolygon(point, feature.geometry));
+export function findPolygonContaining({ geometry }, collection) {
+    switch (geometry.type) {
+        case 'Point':
+            return collection.features.find(feature =>
+                pointInPolygon(geometry.coordinates, feature.geometry),
+            );
+        case 'LineString':
+        case 'MultiLineString':
+            return collection.features.find(feature => lineInPolygon(geometry, feature.geometry));
+    }
 }
 
 export function getContainingPolygonId(location, collection) {

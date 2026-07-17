@@ -23,7 +23,6 @@ import {
     Map,
     MapGeoJSONFeature,
     MapLayerMouseEvent,
-    MapLibreEvent,
     MapMouseEvent,
     Popup,
 } from 'maplibre-gl';
@@ -54,6 +53,7 @@ import {
     LABEL_PAINT,
     LABELS_MIN_ZOOM,
     LINES_LAYOUT,
+    LINES_OUTLINE,
     LINES_PAINT,
     LINES_SHADOW,
     LOCATION_LABELS_FILTER,
@@ -69,8 +69,6 @@ import {
     SEARCH_HIGHLIGHT_CIRCLE_PAINT,
     SEARCH_HIGHLIGHT_LINE_LAYOUT,
     SEARCH_HIGHLIGHT_LINE_PAINT,
-    SYMBOL_MARKER_LAYOUT,
-    SYMBOL_MARKER_PAINT,
 } from './configs';
 import { buildMaskPolygon, getGeometryPositions, HighlightableGeometry } from '../../utils';
 import { MatIconButton, MatMiniFabButton } from '@angular/material/button';
@@ -82,6 +80,7 @@ import { MapSearchComponent } from '../map-search/map-search.component';
 import { KeyValuePipe } from '@angular/common';
 import { MatBottomSheet, MatBottomSheetRef } from '@angular/material/bottom-sheet';
 import { CardComponent } from '../card/card.component';
+import { takeUntil } from 'rxjs';
 
 @Component({
     selector: 'cc-map-page',
@@ -103,8 +102,6 @@ import { CardComponent } from '../card/card.component';
 export class MapPageComponent {
     protected readonly map = viewChild.required(MapComponent);
     protected readonly searchComponent = viewChild.required(MapSearchComponent);
-
-    protected readonly isZoomedOut = signal<boolean>(false);
 
     protected readonly cursorStyle = signal<string>('default');
 
@@ -198,13 +195,11 @@ export class MapPageComponent {
 
     protected readonly linesLayout = LINES_LAYOUT;
     protected readonly linesPaint = LINES_PAINT;
+    protected readonly linesOutline = LINES_OUTLINE;
     protected readonly linesShadow = LINES_SHADOW;
 
     protected readonly pointsPaint = POINTS_PAINT;
     protected readonly pointsShadow = POINTS_SHADOW;
-
-    protected readonly symbolMarkerLayout = SYMBOL_MARKER_LAYOUT;
-    protected readonly symbolMarkerPaint = SYMBOL_MARKER_PAINT;
 
     protected readonly locationTypes: LocationType[] = [
         'cities',
@@ -280,7 +275,7 @@ export class MapPageComponent {
         }
     }
 
-    onHomeClick(): void {
+    resetMapView(): void {
         this.map().mapInstance.flyTo({ center: INITIAL_MAP_CENTER, zoom: ZoomLevel.Initial });
     }
 
@@ -294,21 +289,16 @@ export class MapPageComponent {
             return;
         }
 
+        this.cursorStyle.set('pointer');
         this.showTooltip(target, feature, lngLat);
     }
 
     onFeatureLeave(): void {
+        this.cursorStyle.set('default');
         this.popup?.remove();
         this.popup = null;
         this.tooltipRef?.destroy();
         this.tooltipRef = null;
-    }
-
-    onMapZoom(event: MapLibreEvent<MouseEvent | TouchEvent | WheelEvent | undefined>): void {
-        const isZoomedOut = event.target.getZoom() < ZoomLevel.Initial;
-        if (this.isZoomedOut() !== isZoomedOut) {
-            this.isZoomedOut.set(isZoomedOut);
-        }
     }
 
     onMapDragStart(): void {
@@ -365,7 +355,7 @@ export class MapPageComponent {
             new LngLatBounds(),
         );
         mapInstance.fitBounds(bounds, {
-            maxZoom: ZoomLevel.High,
+            maxZoom: ZoomLevel.High + 0.5,
             padding: 60,
             offset: [0, -25],
         });
@@ -377,10 +367,10 @@ export class MapPageComponent {
         const layerTypes = {
             Polygon: 'polygon',
             MultiPolygon: 'polygon',
-            Line: 'line',
-            MultiLine: 'line',
+            LineString: 'line',
+            MultiLineString: 'line',
             Point: 'point',
-        };
+        } as const;
         return layerTypes[geometryType];
     }
 
@@ -388,13 +378,17 @@ export class MapPageComponent {
         return geometry.type === 'Point' || properties.id === 'the-wall';
     }
 
-    private openCard({ properties }: Feature): void {
+    private openCard(feature: Feature): void {
         this.onFeatureLeave();
 
         const bottomSheetRef = (this.bottomSheetRef = this.bottomSheet.open(CardComponent, {
             hasBackdrop: false,
-            data: properties as LocationData,
+            data: feature.properties as LocationData,
         }));
+
+        bottomSheetRef.instance.goToLocation$
+            .pipe(takeUntil(bottomSheetRef.afterDismissed()))
+            .subscribe(() => this.zoomToFeature(feature));
 
         bottomSheetRef.afterDismissed().subscribe(() => {
             if (this.bottomSheetRef === bottomSheetRef) {

@@ -2,6 +2,20 @@
     <h3>{{ data.name }}</h3>
     <button
         matIconButton
+        aria-label="Go to location"
+        (click)="goToLocation$.next();"
+    >
+        <mat-icon>my_location</mat-icon>
+    </button>
+    <button
+        matIconButton
+        aria-label="Share"
+        (click)="share()"
+    >
+        <mat-icon class="share-icon">ios_share</mat-icon>
+    </button>
+    <button
+        matIconButton
         aria-label="Close"
         (click)="close()"
     >
@@ -9,13 +23,15 @@
     </button>
 </div>
 
+@let area = data | area;
+
 <div class="card-subtitle">
     @if (data.type) {
         <span>{{ data.type }}</span>
-    }
 
-    @if (area?.length) {
-        <span class="bullet">&bull;</span>
+        @if (area?.length) {
+            <span class="bullet">&bull;</span>
+        }
     }
 
     @for (areaPart of area; track areaPart; let last = $last) {

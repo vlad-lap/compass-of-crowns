@@ -17,9 +17,9 @@
     matMiniFab
     class="home-button"
     aria-label="Reset map view"
-    (click)="onHomeClick()"
+    (click)="resetMapView()"
 >
-    <mat-icon>{{ isZoomedOut() ? 'zoom_in_map' : 'zoom_out_map' }}</mat-icon>
+    <mat-icon>center_focus_strong</mat-icon>
 </button>
 
 <mgl-map
@@ -32,7 +32,6 @@
     [maxBounds]="maxBounds"
     [dragRotate]="false"
     [cursorStyle]="cursorStyle()"
-    (zoomEvt)="onMapZoom($event)"
     (mapLoad)="onMapLoad($event)"
     (mapClick)="onMapClick($event)"
     (mapDragStart)="onMapDragStart()"
@@ -97,12 +96,20 @@
         (layerMouseLeave)="onFeatureLeave()"
     />
     <mgl-layer
+        id="wall-outline"
+        type="line"
+        source="wall"
+        [layout]="linesLayout.wall"
+        [paint]="linesOutline.wall"
+        before="wall-line"
+    />
+    <mgl-layer
         id="wall-shadow"
         type="line"
         source="wall"
         [layout]="linesLayout.wall"
         [paint]="linesShadow.wall"
-        before="wall-line"
+        before="wall-outline"
     />
 
     @for (labeledType of labeledTypes; track labeledType) {
@@ -151,42 +158,27 @@
     />
 
     @for (type of locationTypes; track type) {
-        @if (type === 'ruins') {
-            <mgl-layer
-                [id]="type + '-point'"
-                before="cities-label"
-                type="symbol"
-                source="locations"
-                [filter]="locationsFilter[type]"
-                [layout]="symbolMarkerLayout"
-                [paint]="symbolMarkerPaint"
-                [minzoom]="locationsMinZoom[type] || 0"
-                (layerMouseEnter)="onFeatureEnter($event)"
-                (layerMouseLeave)="onFeatureLeave()"
-            />
-        } @else {
-            <mgl-layer
-                [id]="type + '-point'"
-                before="cities-label"
-                type="circle"
-                source="locations"
-                [filter]="locationsFilter[type]"
-                [paint]="pointsPaint"
-                [minzoom]="locationsMinZoom[type] || 0"
-                (layerMouseEnter)="onFeatureEnter($event)"
-                (layerMouseLeave)="onFeatureLeave()"
-            />
+        <mgl-layer
+            [id]="type + '-point'"
+            before="cities-label"
+            type="circle"
+            source="locations"
+            [filter]="locationsFilter[type]"
+            [paint]="pointsPaint"
+            [minzoom]="locationsMinZoom[type] || 0"
+            (layerMouseEnter)="onFeatureEnter($event)"
+            (layerMouseLeave)="onFeatureLeave()"
+        />
 
-            <mgl-layer
-                [id]="type + '-shadow'"
-                [before]="type + '-point'"
-                type="circle"
-                source="locations"
-                [filter]="locationsFilter[type]"
-                [paint]="pointsShadow"
-                [minzoom]="locationsMinZoom[type] || 0"
-            />
-        }
+        <mgl-layer
+            [id]="type + '-shadow'"
+            [before]="type + '-point'"
+            type="circle"
+            source="locations"
+            [filter]="locationsFilter[type]"
+            [paint]="pointsShadow"
+            [minzoom]="locationsMinZoom[type] || 0"
+        />
 
         <mgl-layer
             [id]="type + '-label'"
@@ -240,11 +232,27 @@
         [layout]="searchHighlightLineLayout()"
     />
     <mgl-layer
+        id="search-highlight-point-outline"
+        type="circle"
+        source="search-highlight"
+        before="search-highlight-point-shadow"
+        [paint]="searchHighlightPointPaint"
+        [layout]="searchHighPointLayout()"
+    />
+    <mgl-layer
         id="search-highlight-point"
         type="circle"
         source="search-highlight"
         before="cities-point"
-        [paint]="searchHighlightPointPaint"
+        [paint]="pointsPaint"
+        [layout]="searchHighPointLayout()"
+    />
+    <mgl-layer
+        id="search-highlight-point-shadow"
+        type="circle"
+        source="search-highlight"
+        before="search-highlight-point"
+        [paint]="pointsShadow"
         [layout]="searchHighPointLayout()"
     />
 </mgl-map>

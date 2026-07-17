@@ -1,5 +1,7 @@
 import { GeodataDict } from './models';
 
+export const APP_TITLE = 'Compass of Crowns';
+
 export const GEODATA_URLS: GeodataDict<string> = {
     continents: 'geodata/got_continents.geojson',
     kingdoms: 'geodata/got_political.geojson',

@@ -33,3 +33,13 @@ export function pointInPolygon(point, geometry) {
     }
     return false;
 }
+
+export function lineInPolygon(line, geometry) {
+    const points = line.type === 'MultiLineString' ? line.coordinates.flat() : line.coordinates;
+    if (points.length === 0) {
+        return false;
+    }
+
+    const insidePointsCount = points.filter(point => pointInPolygon(point, geometry)).length;
+    return insidePointsCount / points.length >= 0.5;
+}

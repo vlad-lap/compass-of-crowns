@@ -17,7 +17,8 @@ export enum ZoomLevel {
 }
 
 export const BLACK = '#333333';
-export const GREY = '#6e6a63';
+export const GREY = '#7b766f';
+export const LIGHT_GREY = '#b0aaa2';
 export const WHITE = '#faf7ef';
 export const RED = '#ff3b30';
 
@@ -26,7 +27,7 @@ export enum LandscapeColor {
     Water = '#90d9ed',
     Forest = '#93cba2',
     Swamp = '#bae8d6',
-    Desert = '#fddc96',
+    Desert = '#f4efe5',
     Road = '#ffa80d',
     Wall = WHITE,
     KingdomBorder = GREY,
@@ -39,17 +40,13 @@ export enum LabelColor {
     Road = '#bd7c05',
     Wall = BLACK,
     Location = BLACK,
+    Ruin = GREY,
 }
 
 export enum LocationRadius {
     SM = 2,
     MD = 3,
     LG = 4,
-}
-
-export enum SymbolMarkerSize {
-    SM = 14,
-    LG = 18,
 }
 
 export const TOUCH_HIT_RADIUS_PX = 15;

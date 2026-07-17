@@ -24,4 +24,15 @@ export const EXTRA_LOCATIONS = [
     },
 ];
 
-export const EXCLUDED_IDS = ['desert-the-dothraki-sea', 'water-iron-islands'];
+export const EXCLUDED_IDS = [
+    'desert-the-dothraki-sea',
+    'water-iron-islands',
+    'other-holdfast',
+    'other-village',
+    'other-unnamed-village',
+    'other-fishing-village',
+    'other-crofters-village',
+    'other-palisade-village',
+    'other-sept',
+    'other-tower',
+];
