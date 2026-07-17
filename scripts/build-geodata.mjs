@@ -13,8 +13,16 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 const VENDORS = join(__dirname, '..', 'vendors');
 const GEODATA = join(__dirname, '..', 'geodata');
 
+function readJSON(path) {
+    return JSON.parse(readFileSync(path, 'utf8'));
+}
+
+function writeJSON(path, json) {
+    writeFileSync(path, JSON.stringify(json, null, 2));
+}
+
 function readGeoJSON(fileName) {
-    const collection = JSON.parse(readFileSync(join(VENDORS, fileName), 'utf8'));
+    const collection = readJSON(join(VENDORS, fileName), 'utf8');
     const collectionWithIds = generateIds(collection);
     return filterGeodata(
         collectionWithIds,
@@ -23,7 +31,7 @@ function readGeoJSON(fileName) {
 }
 
 function writeGeoJSON(fileName, collection) {
-    writeFileSync(join(GEODATA, fileName), JSON.stringify(collection, null, 2));
+    writeJSON(join(GEODATA, fileName), collection);
     console.log(`${fileName}: ${collection.features.length} features`);
 }
 
@@ -100,7 +108,7 @@ for (const [type, collection] of Object.entries({ ...landscapeByType, ...regions
     }
 }
 
-processGeoJSON('got_wall.geojson', {
+const theWall = processGeoJSON('got_wall.geojson', {
     mapFn: feature => ({
         ...feature,
         properties: {
@@ -131,3 +139,31 @@ const locationsWithExtras = {
 };
 
 writeGeoJSON('got_locations.geojson', locationsWithExtras);
+
+const DATA = join(__dirname, '..', 'data');
+const RAW_DATA = join(DATA, 'raw');
+
+const descriptions = readJSON(join(DATA, 'descriptions.json'));
+
+mkdirSync(RAW_DATA, { recursive: true });
+
+const getRawData = feature => ({
+    ...feature.properties,
+    description: descriptions[feature.properties.id] ?? null,
+});
+
+function writeRawDataJSON(fileName, dataItems) {
+    writeJSON(join(RAW_DATA, fileName), dataItems);
+    const withDescriptions = dataItems.filter(item => !!item.description)
+    console.log(
+        `${fileName}: ${withDescriptions.length}/${dataItems.length} features with descriptions`,
+    );
+}
+
+const wallData = theWall.features.map(getRawData);
+writeRawDataJSON('the-wall.json', wallData);
+
+const locationsData = locationsWithExtras.features.map(getRawData);
+writeRawDataJSON('locations.json', locationsData);
+
+

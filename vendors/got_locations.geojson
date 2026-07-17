@@ -184,7 +184,7 @@
 { "type": "Feature", "properties": { "id": 182, "name": "Long Barrow", "size": 1, "confirmed": 1, "type": "Ruin" }, "geometry": { "type": "Point", "coordinates": [ 20.190227207898854, 34.694146168606238 ] } },
 { "type": "Feature", "properties": { "id": 183, "name": "Torches", "size": 1, "confirmed": 1, "type": "Ruin" }, "geometry": { "type": "Point", "coordinates": [ 20.409823354302812, 34.670784876435604 ] } },
 { "type": "Feature", "properties": { "id": 184, "name": "Greenguard", "size": 1, "confirmed": 1, "type": "Ruin" }, "geometry": { "type": "Point", "coordinates": [ 20.573352399497249, 34.628734550528463 ] } },
-{ "type": "Feature", "properties": { "id": 185, "name": "Eastwatch-by-the-Sea", "size": 3, "confirmed": 1, "type": "Castle" }, "geometry": { "type": "Point", "coordinates": [ 20.718192410955179, 34.792263595722901 ] } },
+{ "type": "Feature", "properties": { "id": 185, "name": "Eastwatch-by-the-Sea", "size": 3, "confirmed": 1, "type": "Castle" }, "geometry": { "type": "Point", "coordinates": [ 20.77037699161002, 34.756043911118184 ] } },
 { "type": "Feature", "properties": { "id": 186, "name": "Whitetree", "size": 1, "confirmed": 1, "type": "Other" }, "geometry": { "type": "Point", "coordinates": [ 18.167139305921964, 35.409001709027628 ] } },
 { "type": "Feature", "properties": { "id": 187, "name": "Craster's Keep", "size": 1, "confirmed": 1, "type": "Other" }, "geometry": { "type": "Point", "coordinates": [ 17.625157327563262, 36.296730811511715 ] } },
 { "type": "Feature", "properties": { "id": 188, "name": "Fist of the First Men", "size": 1, "confirmed": 1, "type": "Other" }, "geometry": { "type": "Point", "coordinates": [ 16.24216883106174, 37.212493464600556 ] } },
