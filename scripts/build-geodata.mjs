@@ -12,6 +12,8 @@ import _ from 'lodash';
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const VENDORS = join(__dirname, '..', 'vendors');
 const GEODATA = join(__dirname, '..', 'geodata');
+const DATA = join(__dirname, '..', 'data');
+const RAW_DATA = join(DATA, 'raw');
 
 function readJSON(path) {
     return JSON.parse(readFileSync(path, 'utf8'));
@@ -107,6 +109,8 @@ for (const [type, collection] of Object.entries({ ...landscapeByType, ...regions
     }
 }
 
+const descriptions = readJSON(join(DATA, 'descriptions.json'));
+
 const theWall = processGeoJSON('got_wall.geojson', {
     mapFn: feature => ({
         ...feature,
@@ -116,6 +120,7 @@ const theWall = processGeoJSON('got_wall.geojson', {
             kingdomId: getContainingPolygonId(feature, kingdoms),
             regionId: getContainingPolygonId(feature, namedRegions),
             islandId: getContainingPolygonId(feature, islands),
+            description: descriptions[feature.properties.id] ?? null,
         },
     }),
 });
@@ -144,6 +149,7 @@ const locationsWithExtras = {
             kingdomId: getContainingPolygonId(feature, kingdoms),
             regionId: getContainingPolygonId(feature, namedRegions),
             islandId: getContainingPolygonId(feature, islands),
+            description: descriptions[feature.properties.id] ?? null,
         };
         return { ...feature, properties };
     }),
@@ -151,17 +157,7 @@ const locationsWithExtras = {
 
 writeGeoJSON('got_locations.geojson', locationsWithExtras);
 
-const DATA = join(__dirname, '..', 'data');
-const RAW_DATA = join(DATA, 'raw');
-
-const descriptions = readJSON(join(DATA, 'descriptions.json'));
-
 mkdirSync(RAW_DATA, { recursive: true });
-
-const getRawData = feature => ({
-    ...feature.properties,
-    description: descriptions[feature.properties.id] ?? null,
-});
 
 function writeRawDataJSON(fileName, dataItems) {
     writeJSON(join(RAW_DATA, fileName), dataItems);
@@ -171,10 +167,10 @@ function writeRawDataJSON(fileName, dataItems) {
     );
 }
 
-const wallData = theWall.features.map(getRawData);
+const wallData = theWall.features.map(feature => feature.properties);
 writeRawDataJSON('the-wall.json', wallData);
 
-const locationsData = locationsWithExtras.features.map(getRawData);
+const locationsData = locationsWithExtras.features.map(feature => feature.properties);
 writeRawDataJSON('locations.json', locationsData);
 
 const descriptionsDict = [...wallData, ...locationsData]

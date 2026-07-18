@@ -8,8 +8,6 @@ import { Clipboard } from '@angular/cdk/clipboard';
 import { Subject } from 'rxjs';
 import { AreaPipe } from '../../pipes';
 import { APP_TITLE } from '../../constants';
-import { Store } from '@ngxs/store';
-import { DescriptionsState } from '../../store/descriptions';
 
 @Component({
     selector: 'coiaf-card',
@@ -21,11 +19,8 @@ import { DescriptionsState } from '../../store/descriptions';
 export class CardComponent implements OnDestroy {
     goToLocation$ = new Subject<void>();
 
-    description = this.store.selectSnapshot(DescriptionsState.byId(this.data.id));
-
     constructor(
         @Inject(MAT_BOTTOM_SHEET_DATA) protected data: LocationData,
-        private store: Store,
         private bottomSheetRef: MatBottomSheetRef,
         private clipboard: Clipboard,
         private snackBar: MatSnackBar,
