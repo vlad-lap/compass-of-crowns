@@ -1,4 +1,4 @@
-<cc-map-search
+<coiaf-map-search
     (applySearch)="search($event)"
     (resetSearch)="resetSearch()"
 />
@@ -49,24 +49,6 @@
             [paint]="polygonsPaint[polygonType]"
         />
     }
-
-    <mgl-layer
-        id="mountains-outline"
-        type="line"
-        source="mountains"
-        [layout]="mountainsOutlineLayout"
-        [paint]="mountainsOutlinePaint.outline"
-        before="mountains-edge-blur"
-    />
-
-    <mgl-layer
-        id="mountains-edge-blur"
-        type="line"
-        source="mountains"
-        [layout]="mountainsOutlineLayout"
-        [paint]="mountainsOutlinePaint.blur"
-        before="steppes-fill"
-    />
 
     @for (lineType of lineTypes; track lineType) {
         <mgl-geojson-source

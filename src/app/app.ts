@@ -12,7 +12,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { SpinnerComponent } from './components/spinner/spinner.component';
 
 @Component({
-    selector: 'cc-app-root',
+    selector: 'coiaf-app-root',
     imports: [RouterOutlet, SpinnerComponent],
     templateUrl: './app.html',
     styleUrl: './app.scss',

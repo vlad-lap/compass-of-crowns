@@ -11,7 +11,7 @@
             "projectType": "application",
             "schematics": {
                 "@schematics/angular:component": {
-                    "prefix": "cc",
+                    "prefix": "coiaf",
                     "style": "scss",
                     "changeDetection": "OnPush"
                 }

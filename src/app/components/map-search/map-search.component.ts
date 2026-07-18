@@ -59,7 +59,7 @@ const OPTIONS_GROUP_ORDER: OptionGroup[] = [
 ];
 
 @Component({
-    selector: 'cc-map-search',
+    selector: 'coiaf-map-search',
     changeDetection: ChangeDetectionStrategy.OnPush,
     imports: [
         CommonModule,

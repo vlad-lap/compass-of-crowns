@@ -61,8 +61,6 @@ import {
     LOCATIONS_MIN_ZOOM,
     MAP_BOUNDS,
     MAP_STYLE,
-    MOUNTAINS_OUTLINE_LAYOUT,
-    MOUNTAINS_OUTLINE_PAINT,
     POINTS_PAINT,
     POINTS_SHADOW,
     POLYGONS_PAINT,
@@ -70,7 +68,12 @@ import {
     SEARCH_HIGHLIGHT_LINE_LAYOUT,
     SEARCH_HIGHLIGHT_LINE_PAINT,
 } from './configs';
-import { buildMaskPolygon, getGeometryPositions, HighlightableGeometry } from '../../utils';
+import {
+    buildMaskPolygon,
+    generateMountainPattern,
+    getGeometryPositions,
+    HighlightableGeometry,
+} from '../../utils';
 import { MatIconButton, MatMiniFabButton } from '@angular/material/button';
 import { MatIcon } from '@angular/material/icon';
 import { MatDialog } from '@angular/material/dialog';
@@ -83,7 +86,7 @@ import { CardComponent } from '../card/card.component';
 import { takeUntil } from 'rxjs';
 
 @Component({
-    selector: 'cc-map-page',
+    selector: 'coiaf-map-page',
     changeDetection: ChangeDetectionStrategy.OnPush,
     imports: [
         MapComponent,
@@ -156,9 +159,9 @@ export class MapPageComponent {
         'seas',
         'shores',
         'islands',
-        'mountains',
         'steppes',
         'deserts',
+        'mountains',
         'swamps',
         'forests',
     ];
@@ -189,9 +192,6 @@ export class MapPageComponent {
     );
 
     protected readonly polygonsPaint = POLYGONS_PAINT;
-
-    protected readonly mountainsOutlineLayout = MOUNTAINS_OUTLINE_LAYOUT;
-    protected readonly mountainsOutlinePaint = MOUNTAINS_OUTLINE_PAINT;
 
     protected readonly linesLayout = LINES_LAYOUT;
     protected readonly linesPaint = LINES_PAINT;
@@ -257,10 +257,9 @@ export class MapPageComponent {
         });
     }
 
-    async onMapLoad(map: Map): Promise<void> {
+    onMapLoad(map: Map): void {
         map.touchZoomRotate.disableRotation();
-        const { data } = await map.loadImage('hillshade.png');
-        map.addImage(MOUNTAIN_PATTERN_ID, data);
+        map.addImage(MOUNTAIN_PATTERN_ID, generateMountainPattern());
 
         const feature = this.searchHighlightFeature();
         if (feature) {

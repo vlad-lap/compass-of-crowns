@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, computed, input } from '@angular/core';
 
 @Component({
-    selector: 'cc-star-icon',
+    selector: 'coiaf-star-icon',
     changeDetection: ChangeDetectionStrategy.OnPush,
     templateUrl: './star-icon.component.svg',
     styleUrl: './star-icon.component.scss',

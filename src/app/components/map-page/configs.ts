@@ -89,7 +89,7 @@ export const POLYGONS_PAINT: GeodataDict<FillLayerSpecification['paint']> = {
     },
     mountains: {
         'fill-pattern': MOUNTAIN_PATTERN_ID,
-        'fill-opacity': 0.2,
+        'fill-opacity': 0.05,
     },
     forests: {
         'fill-color': LandscapeColor.Forest,
@@ -117,23 +117,6 @@ export const POLYGONS_PAINT: GeodataDict<FillLayerSpecification['paint']> = {
     },
     lands: {
         'fill-opacity': 0,
-    },
-};
-
-export const MOUNTAINS_OUTLINE_LAYOUT: LineLayerSpecification['layout'] = {
-    'line-join': 'round',
-};
-
-export const MOUNTAINS_OUTLINE_PAINT: Record<string, LineLayerSpecification['paint']> = {
-    outline: {
-        'line-color': LandscapeColor.Land,
-        'line-width': 8,
-    },
-    blur: {
-        'line-color': LandscapeColor.Land,
-        'line-width': 10,
-        'line-blur': 10,
-        'line-offset': 5,
     },
 };
 

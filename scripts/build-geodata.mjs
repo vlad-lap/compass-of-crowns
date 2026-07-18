@@ -80,10 +80,9 @@ function appendNamedRegions(collection) {
 }
 
 for (const type of combinedTypes) {
-    const lowercased = type.toLowerCase();
     const features = [
-        ...landscapeByType[lowercased]?.features,
-        ...regionsByType[lowercased]?.features,
+        ...landscapeByType[type]?.features,
+        ...regionsByType[type]?.features,
     ];
 
     const collection = {
@@ -92,7 +91,7 @@ for (const type of combinedTypes) {
     };
 
     appendNamedRegions(collection);
-    writeGeoJSON(`got_${lowercased}.geojson`, collection);
+    writeGeoJSON(`got_${type}.geojson`, collection);
 }
 
 for (const [type, collection] of Object.entries({ ...landscapeByType, ...regionsByType })) {
@@ -102,7 +101,7 @@ for (const [type, collection] of Object.entries({ ...landscapeByType, ...regions
 
         const smoothed = {
             ...collection,
-            features: collection.features.map(smoothPolygon),
+            features: collection.features.map(feature => smoothPolygon(feature, 2)),
         };
         writeGeoJSON(`got_${lowercased}.geojson`, smoothed);
     }

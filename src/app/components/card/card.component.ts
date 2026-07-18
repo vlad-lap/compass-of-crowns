@@ -12,7 +12,7 @@ import { Store } from '@ngxs/store';
 import { DescriptionsState } from '../../store/descriptions';
 
 @Component({
-    selector: 'cc-card',
+    selector: 'coiaf-card',
     changeDetection: ChangeDetectionStrategy.OnPush,
     imports: [MatIcon, MatIconButton, AreaPipe],
     templateUrl: './card.component.html',

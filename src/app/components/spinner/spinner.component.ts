@@ -2,9 +2,9 @@ import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { StarIconComponent } from '../star-icon/star-icon.component';
 
 @Component({
-    selector: 'cc-spinner',
+    selector: 'coiaf-spinner',
     changeDetection: ChangeDetectionStrategy.OnPush,
     imports: [StarIconComponent],
-    template: '<cc-star-icon [scale]="0.1" [animated]="true" />',
+    template: '<coiaf-star-icon [scale]="0.1" [animated]="true" />',
 })
 export class SpinnerComponent {}

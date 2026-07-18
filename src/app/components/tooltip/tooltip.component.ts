@@ -3,7 +3,7 @@ import { LocationData } from '../../models';
 import { AreaPipe } from '../../pipes';
 
 @Component({
-    selector: 'cc-tooltip',
+    selector: 'coiaf-tooltip',
     changeDetection: ChangeDetectionStrategy.OnPush,
     templateUrl: 'tooltip.component.html',
     styleUrl: './tooltip.component.scss',
