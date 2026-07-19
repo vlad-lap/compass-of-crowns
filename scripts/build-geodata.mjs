@@ -12,6 +12,8 @@ import _ from 'lodash';
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const VENDORS = join(__dirname, '..', 'vendors');
 const GEODATA = join(__dirname, '..', 'geodata');
+const DATA = join(__dirname, '..', 'data');
+const RAW_DATA = join(DATA, 'raw');
 
 function readJSON(path) {
     return JSON.parse(readFileSync(path, 'utf8'));
@@ -107,6 +109,8 @@ for (const [type, collection] of Object.entries({ ...landscapeByType, ...regions
     }
 }
 
+const descriptions = readJSON(join(DATA, 'descriptions.json'));
+
 const theWall = processGeoJSON('got_wall.geojson', {
     mapFn: feature => ({
         ...feature,
@@ -116,52 +120,27 @@ const theWall = processGeoJSON('got_wall.geojson', {
             kingdomId: getContainingPolygonId(feature, kingdoms),
             regionId: getContainingPolygonId(feature, namedRegions),
             islandId: getContainingPolygonId(feature, islands),
+            description: descriptions[feature.properties.id] ?? null,
         },
     }),
 });
 
-const locations = readGeoJSON('got_locations.geojson');
-
-const getSize = feature => {
-    if (GREAT_CASTLES.includes(feature.properties.name)) {
-        return 4;
-    }
-
-    if (feature.properties.type === 'Town') {
-        return 3;
-    }
-
-    return feature.properties.size;
-}
-
-const locationsWithExtras = {
-    ...locations,
-    features: [...locations.features, ...EXTRA_LOCATIONS].map(feature => {
-        const properties = {
+const locations = processGeoJSON('got_locations.geojson', {
+    mapFn: feature => ({
+        ...feature,
+        properties: {
             ...feature.properties,
-            size: getSize(feature),
+            size: feature.properties.size,
             continentId: getLocationContinentId(feature, continents, islands),
             kingdomId: getContainingPolygonId(feature, kingdoms),
             regionId: getContainingPolygonId(feature, namedRegions),
             islandId: getContainingPolygonId(feature, islands),
-        };
-        return { ...feature, properties };
+            description: descriptions[feature.properties.id] ?? null,
+        },
     }),
-};
-
-writeGeoJSON('got_locations.geojson', locationsWithExtras);
-
-const DATA = join(__dirname, '..', 'data');
-const RAW_DATA = join(DATA, 'raw');
-
-const descriptions = readJSON(join(DATA, 'descriptions.json'));
+});
 
 mkdirSync(RAW_DATA, { recursive: true });
-
-const getRawData = feature => ({
-    ...feature.properties,
-    description: descriptions[feature.properties.id] ?? null,
-});
 
 function writeRawDataJSON(fileName, dataItems) {
     writeJSON(join(RAW_DATA, fileName), dataItems);
@@ -171,10 +150,10 @@ function writeRawDataJSON(fileName, dataItems) {
     );
 }
 
-const wallData = theWall.features.map(getRawData);
+const wallData = theWall.features.map(feature => feature.properties);
 writeRawDataJSON('the-wall.json', wallData);
 
-const locationsData = locationsWithExtras.features.map(getRawData);
+const locationsData = locations.features.map(feature => feature.properties);
 writeRawDataJSON('locations.json', locationsData);
 
 const descriptionsDict = [...wallData, ...locationsData]

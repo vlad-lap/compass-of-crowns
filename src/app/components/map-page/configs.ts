@@ -168,8 +168,8 @@ export const LINES_SHADOW: GeodataDict<LineLayerSpecification['paint']> = {
 
 export const LOCATIONS_FILTER: LocationDict<ExpressionSpecification> = {
     primary: ['any', ['==', ['get', 'size'], 4], ['==', ['get', 'size'], 5]],
-    secondary: ['any', ['==', ['get', 'size'], 2], ['==', ['get', 'size'], 3]],
-    tertiary: ['==', ['get', 'size'], 1],
+    secondary: ['==', ['get', 'size'], 3],
+    tertiary: ['any', ['==', ['get', 'size'], 1], ['==', ['get', 'size'], 2]],
 };
 
 export const LABEL_SIZE_FILTER: ExpressionSpecification = ['>', ['number', ['get', 'size']], 1];
@@ -281,6 +281,10 @@ const DEFAULT_POINT_LABEL_LAYOUT: SymbolLayerSpecification['layout'] = {
         'case',
         LOCATIONS_FILTER.primary,
         FontSize.LG,
+        LOCATIONS_FILTER.secondary,
+        FontSize.MD,
+        LOCATIONS_FILTER.tertiary,
+        FontSize.SM,
         FontSize.MD,
     ],
 };
