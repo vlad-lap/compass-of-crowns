@@ -1,52 +1,16 @@
+@let ui = coreUi();
+
 <div mat-dialog-title>
     <div class="dialog-header">
-        <h3>About</h3>
+        <h3>{{ ui?.about }}</h3>
         <button
             matIconButton
             mat-dialog-close
-            aria-label="Close"
+            [aria-label]="ui.close"
         >
             <mat-icon>close</mat-icon>
         </button>
     </div>
 </div>
 
-<mat-dialog-content>
-    <p>
-        <b>Compass of Ice and Fire</b> is an unofficial, non-commercial fan project that aims to provide a fast
-        and interactive map of the world of <i>A Song of Ice and Fire</i>.
-    </p>
-    <p>
-        The project is created for educational and entertainment purposes and is not affiliated with or endorsed by
-        George R. R. Martin, HBO, or any other rights holders.
-    </p>
-    <p>
-        Source code: <a href="https://github.com/vlad-lap/compass-of-ice-and-fire" target="_blank">https://github.com/vlad-lap/compass-of-ice-and-fire</a>
-    </p>
-    <p>
-        The source code of Compass of Ice and Fire is licensed under the <b>Mozilla Public License 2.0 (MPL-2.0)</b>.
-    </p>
-    <h4>Map</h4>
-    <p>
-        The map is created with <a href="https://maplibre.org/" target="_blank">MapLibre GL JS</a>.
-    </p>
-    <h4>Map Data</h4>
-    <p>
-        The map data is based on the GeoJSON project created by <b>cadaei</b>, <b>theMountainGoat</b>,
-        and <b>Tear</b>, with copyright attributed to <b>George R. R. Martin</b>.
-    </p>
-    <p>
-        The original data has been modified for this project, including filtering, processing,
-        assigning stable feature identifiers, and other transformations required for rendering.
-    </p>
-    <p>
-        The original dataset is licensed under the <b>Creative Commons Attribution–NonCommercial–ShareAlike 3.0
-        Unported (CC BY-NC-SA 3.0)</b> license.
-    </p>
-    <p>
-        Source: <a href="https://github.com/mapbox/GOT-Inspired-Map" target="_blank">https://github.com/mapbox/GOT-Inspired-Map</a>
-    </p>
-    <p>
-        License: <a href="https://creativecommons.org/licenses/by-nc-sa/3.0/" target="_blank">https://creativecommons.org/licenses/by-nc-sa/3.0/</a>
-    </p>
-</mat-dialog-content>
+<mat-dialog-content [innerHTML]="aboutHtml()" />

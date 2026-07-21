@@ -1,12 +1,13 @@
 @let locationData = location();
+@let ui = coreUi();
 @let locationArea = locationData | area;
 
 <div class="tooltip">
-    <h5 class="tooltip-title">{{ locationData.name || 'Unknown' }}</h5>
+    <h5 class="tooltip-title">{{ (locationData | localize: 'name') || ui.namePlaceholder }}</h5>
 
     <div class="tooltip-subtitle">
         @if (locationData.type) {
-            <span>{{ locationData.type }}</span>
+            <span>{{ locationData | localize: 'type' }}</span>
 
             @if (locationArea?.length) {
                 <span class="bullet">&bull;</span>

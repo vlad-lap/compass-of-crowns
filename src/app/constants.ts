@@ -1,6 +1,9 @@
-import { GeodataDict } from './models';
+import { GeodataDict, Language } from './models';
 
 export const APP_TITLE = 'Compass of Ice and Fire';
+
+export const AVAILABLE_LANGUAGES: Language[] = ['en', 'ru'];
+export const DEFAULT_LANGUAGE: Language = 'en';
 
 export const GEODATA_URLS: GeodataDict<string> = {
     continents: 'geodata/got_continents.geojson',

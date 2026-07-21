@@ -12,7 +12,10 @@
     display: flex;
     gap: 4px;
     align-items: center;
-    margin-bottom: 12px;
+    margin: {
+        bottom: 12px;
+        left: 12px;
+    }
 
     h3 {
         margin: 0;
@@ -27,7 +30,11 @@
 .card-subtitle {
     font-size: 14px;
     color: variables.$grey;
-    margin-bottom: 12px;
+    margin: {
+        bottom: 12px;
+        left: 12px;
+        right: 12px;
+    }
 }
 
 .bullet {
@@ -36,4 +43,8 @@
 
 .description {
     max-width: 640px;
+    margin: {
+        left: 12px;
+        right: 12px;
+    }
 }

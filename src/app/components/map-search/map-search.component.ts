@@ -1,5 +1,5 @@
 import {
-    ChangeDetectionStrategy,
+    ChangeDetectionStrategy, ChangeDetectorRef,
     Component,
     DestroyRef,
     ElementRef,
@@ -16,19 +16,19 @@ import {
     MatOption,
 } from '@angular/material/autocomplete';
 import { Store } from '@ngxs/store';
-import { GeodataState } from '../../store/geodata';
+import { GeodataState, LanguagesState, SetLanguage } from '../../store';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { map, Observable, startWith } from 'rxjs';
 import { FeatureData, GeodataType, LocationType } from '../../models';
 import { flatten, isEmpty, mapValues, omitBy } from 'lodash';
 import { CommonModule, KeyValue, Location } from '@angular/common';
-import { MatIconButton } from '@angular/material/button';
+import { MatButton, MatIconButton } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
-import { SortByPipe } from '../../pipes';
+import { LocalizePipe, SortByPipe } from '../../pipes';
 import { matchesSearch } from '../../utils';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Title } from '@angular/platform-browser';
-import { APP_TITLE } from '../../constants';
+import { APP_TITLE, AVAILABLE_LANGUAGES } from '../../constants';
 
 type OptionGroup = GeodataType | LocationType;
 
@@ -36,6 +36,7 @@ const OPTIONS_GROUP_ORDER: OptionGroup[] = [
     'castles',
     'cities',
     'towns',
+    'settlements',
     'ruins',
     'other',
 
@@ -72,6 +73,8 @@ const OPTIONS_GROUP_ORDER: OptionGroup[] = [
         MatOption,
         MatIconButton,
         SortByPipe,
+        MatButton,
+        LocalizePipe,
     ],
     templateUrl: './map-search.component.html',
     styleUrl: './map-search.component.scss',
@@ -82,6 +85,9 @@ export class MapSearchComponent implements OnInit {
 
     readonly searchInput = viewChild('searchInput', { read: ElementRef });
 
+    readonly coreUi = this.store.selectSignal(LanguagesState.coreUi);
+    readonly optionGroups = this.store.selectSignal(LanguagesState.optionGroups);
+    readonly language = this.store.selectSignal(LanguagesState.language);
     readonly options = this.store.selectSnapshot(GeodataState.searchOptions);
     readonly searchControl = new FormControl<FeatureData | string>('');
 
@@ -101,6 +107,7 @@ export class MapSearchComponent implements OnInit {
         private location: Location,
         private destroyRef: DestroyRef,
         private title: Title,
+        private cdr: ChangeDetectorRef,
     ) {}
 
     ngOnInit(): void {
@@ -126,15 +133,30 @@ export class MapSearchComponent implements OnInit {
         this.searchControl.patchValue(selectedOption);
     }
 
-    displayFn(option: FeatureData): string {
-        return option?.name;
-    }
+    displayFn = (option: FeatureData): string => {
+        const language = this.language();
+        return option?.[`name_${language}`] ?? option?.name;
+    };
 
     sortOptionsGroup(
         { key: key1 }: KeyValue<OptionGroup, FeatureData[]>,
         { key: key2 }: KeyValue<OptionGroup, FeatureData[]>,
     ): number {
         return OPTIONS_GROUP_ORDER.indexOf(key1) - OPTIONS_GROUP_ORDER.indexOf(key2);
+    }
+
+    toggleLanguage(event: MouseEvent): void {
+        event.stopPropagation();
+
+        const language = this.language();
+        const index = AVAILABLE_LANGUAGES.indexOf(language);
+        const nextIndex = index === AVAILABLE_LANGUAGES.length - 1 ? 0 : index + 1;
+
+        this.store.dispatch(new SetLanguage(AVAILABLE_LANGUAGES[nextIndex]));
+
+        const value = this.searchControl.value;
+        this.searchControl.reset('', { emitEvent: false });
+        this.searchControl.patchValue(value, { emitEvent: false });
     }
 
     private search(value: FeatureData): void {

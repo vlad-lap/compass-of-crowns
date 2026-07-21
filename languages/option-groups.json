@@ -1,0 +1,82 @@
+{
+    "castles": {
+        "en": "Castles",
+        "ru": "Замки"
+    },
+    "cities": {
+        "en": "Cities",
+        "ru": "Крупные города"
+    },
+    "towns": {
+        "en": "Towns",
+        "ru": "Города"
+    },
+    "settlements": {
+        "en": "Settlements",
+        "ru": "Поселения"
+    },
+    "ruins": {
+        "en": "Ruins",
+        "ru": "Руины"
+    },
+    "other": {
+        "en": "Other",
+        "ru": "Прочее"
+    },
+    "kingdoms": {
+        "en": "Kingdoms",
+        "ru": "Королевства"
+    },
+    "lands": {
+        "en": "Lands",
+        "ru": "Территории"
+    },
+    "wall": {
+        "en": "The Wall",
+        "ru": "Стена"
+    },
+    "continents": {
+        "en": "Continents",
+        "ru": "Континенты"
+    },
+    "islands": {
+        "en": "Islands",
+        "ru": "Острова"
+    },
+    "seas": {
+        "en": "Seas and bays",
+        "ru": "Моря и заливы"
+    },
+    "rivers": {
+        "en": "Rivers",
+        "ru": "Реки"
+    },
+    "lakes": {
+        "en": "Lakes",
+        "ru": "Озёра"
+    },
+    "mountains": {
+        "en": "Mountains",
+        "ru": "Горы"
+    },
+    "forests": {
+        "en": "Forests",
+        "ru": "Леса"
+    },
+    "shores": {
+        "en": "Shores",
+        "ru": "Побережья"
+    },
+    "steppes": {
+        "en": "Steppes",
+        "ru": "Степи"
+    },
+    "swamps": {
+        "en": "Swamps",
+        "ru": "Болота"
+    },
+    "deserts": {
+        "en": "Deserts",
+        "ru": "Пустыни"
+    }
+}

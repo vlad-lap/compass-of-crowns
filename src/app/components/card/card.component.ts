@@ -6,24 +6,29 @@ import { MatIconButton } from '@angular/material/button';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Clipboard } from '@angular/cdk/clipboard';
 import { Subject } from 'rxjs';
-import { AreaPipe } from '../../pipes';
+import { AreaPipe, LocalizePipe } from '../../pipes';
 import { APP_TITLE } from '../../constants';
+import { Store } from '@ngxs/store';
+import { LanguagesState } from '../../store';
 
 @Component({
     selector: 'coiaf-card',
     changeDetection: ChangeDetectionStrategy.OnPush,
-    imports: [MatIcon, MatIconButton, AreaPipe],
+    imports: [MatIcon, MatIconButton, AreaPipe, LocalizePipe],
     templateUrl: './card.component.html',
     styleUrl: './card.component.scss',
 })
 export class CardComponent implements OnDestroy {
     goToLocation$ = new Subject<void>();
 
+    readonly coreUi = this.store.selectSignal(LanguagesState.coreUi);
+
     constructor(
         @Inject(MAT_BOTTOM_SHEET_DATA) protected data: LocationData,
         private bottomSheetRef: MatBottomSheetRef,
         private clipboard: Clipboard,
         private snackBar: MatSnackBar,
+        private store: Store,
     ) {}
 
     ngOnDestroy(): void {

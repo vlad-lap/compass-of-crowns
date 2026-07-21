@@ -16,6 +16,11 @@ $transition-options: 120ms cubic-bezier(0, 0, 0.2, 1);
         container-shape: 8px,
     ));
 
+    @include mat.button-overrides((
+        text-horizontal-padding: 4px,
+        text-label-text-color: variables.$light-grey,
+    ));
+
     position: absolute;
     z-index: 2;
     background-color: rgba(255, 255, 255, .7);
@@ -48,6 +53,12 @@ $transition-options: 120ms cubic-bezier(0, 0, 0.2, 1);
     width: 100%;
 }
 
-.reset-button {
+.search-suffix {
+    display: flex;
+    align-items: center;
     margin-right: 8px;
+}
+
+.language-button {
+    min-width: 40px;
 }

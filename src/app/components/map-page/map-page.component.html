@@ -3,11 +3,13 @@
     (resetSearch)="resetSearch()"
 />
 
+@let ui = coreUi();
+
 <button
     matIconButton
     class="about-button"
-    title="About this project"
-    aria-label="About this project"
+    [title]="ui.about"
+    [aria-label]="ui.about"
     (click)="openAboutDialog()"
 >
     <mat-icon>info_i</mat-icon>
@@ -16,7 +18,8 @@
 <button
     matMiniFab
     class="home-button"
-    aria-label="Reset map view"
+    [title]="ui.resetMapView"
+    [aria-label]="ui.resetMapView"
     (click)="resetMapView()"
 >
     <mat-icon>center_focus_strong</mat-icon>
@@ -99,7 +102,7 @@
             [id]="labeledType + '-label'"
             type="symbol"
             [source]="labeledType"
-            [layout]="labelLayout[labeledType] || defaultLabelLayout"
+            [layout]="labelLayout()[labeledType] || defaultLabelLayout()"
             [paint]="labelPaint[labeledType]"
             [minzoom]="labelsMinZoom[labeledType] || 0"
         />
@@ -113,7 +116,7 @@
         id="continents-label"
         type="symbol"
         source="continents-label-points"
-        [layout]="labelLayout.continents"
+        [layout]="labelLayout().continents"
         [paint]="labelPaint.continents"
         [maxzoom]="ZoomLevel.Low"
         before="kingdoms-label"
@@ -127,7 +130,7 @@
         id="kingdoms-label"
         type="symbol"
         source="kingdoms-label-points"
-        [layout]="labelLayout.kingdoms"
+        [layout]="labelLayout().kingdoms"
         [paint]="labelPaint.kingdoms"
         [minzoom]="ZoomLevel.Low"
         [maxzoom]="ZoomLevel.Medium"
@@ -168,7 +171,7 @@
             source="locations"
             [filter]="locationLabelsFilter[tier]"
             [minzoom]="locationsMinZoom[tier] || 0"
-            [layout]="labelLayout.locations"
+            [layout]="labelLayout().locations"
             [paint]="labelPaint.locations"
         />
     }

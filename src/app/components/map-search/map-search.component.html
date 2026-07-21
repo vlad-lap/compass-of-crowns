@@ -1,23 +1,35 @@
+@let ui = coreUi();
+
 <mat-form-field appearance="outline" subscriptSizing="dynamic">
     <mat-icon matPrefix>search</mat-icon>
     <input
         matInput
         #searchInput
-        placeholder="Search"
+        [placeholder]="ui.searchPlaceholder"
         [formControl]="searchControl"
         [matAutocomplete]="autocomplete"
     />
 
-    @if (searchControl.value) {
+    <div class="search-suffix" matSuffix>
+        @if (searchControl.value) {
+            <button
+                matIconButton
+                [aria-label]="ui.clear"
+                (click)="searchControl.reset('')"
+            >
+                <mat-icon>close</mat-icon>
+            </button>
+        }
+
         <button
-            matIconButton
+            matButton
             matSuffix
-            class="reset-button"
-            (click)="searchControl.reset('')"
+            class="language-button"
+            [aria-label]="ui.language"
+            (click)="toggleLanguage($event)"
+            >{{ language() | uppercase }}</button
         >
-            <mat-icon>close</mat-icon>
-        </button>
-    }
+    </div>
 </mat-form-field>
 
 <mat-autocomplete
@@ -26,11 +38,12 @@
     hideSingleSelectionIndicator
 >
     @let filteredOptions = filteredOptions$ | async | keyvalue: sortOptionsGroup;
+    @let groups = optionGroups();
 
     @for (optionGroup of filteredOptions; track optionGroup.key) {
-        <mat-optgroup [label]="optionGroup.key | titlecase">
+        <mat-optgroup [label]="groups[optionGroup.key]">
             @for (option of optionGroup.value | sortBy: 'name'; track option.id) {
-                <mat-option [value]="option">{{ option.name }}</mat-option>
+                <mat-option [value]="option">{{ option | localize: 'name' }}</mat-option>
             }
         </mat-optgroup>
     }

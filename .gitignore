@@ -33,6 +33,8 @@ __screenshots__/
 
 # Claude
 .claude/*
+!.claude/skills
+!.claude/skills/**
 !.claude/CLAUDE.md
 
 # System files
