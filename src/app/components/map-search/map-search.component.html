@@ -5,6 +5,10 @@
     <input
         matInput
         #searchInput
+        [attr.lang]="language()"
+        inputmode="search"
+        autocomplete="off"
+        spellcheck="false"
         [placeholder]="ui.searchPlaceholder"
         [formControl]="searchControl"
         [matAutocomplete]="autocomplete"
@@ -22,8 +26,7 @@
         }
 
         <button
-            matButton
-            matSuffix
+            matIconButton
             class="language-button"
             [aria-label]="ui.language"
             (click)="toggleLanguage($event)"

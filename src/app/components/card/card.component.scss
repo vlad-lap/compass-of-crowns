@@ -43,7 +43,9 @@
 
 .description {
     max-width: 640px;
-    margin: {
+    max-height: 200px;
+    overflow-y: auto;
+    padding: {
         left: 12px;
         right: 12px;
     }
