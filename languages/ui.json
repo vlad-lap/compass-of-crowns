@@ -1,0 +1,38 @@
+{
+    "searchPlaceholder": {
+        "en": "Search",
+        "ru": "Поиск"
+    },
+    "language": {
+        "en": "Language",
+        "ru": "Язык"
+    },
+    "clear": {
+        "en": "Clear",
+        "ru": "Очистить"
+    },
+    "resetMapView": {
+        "en": "Reset map view",
+        "ru": "Вернуться к исходному виду"
+    },
+    "about": {
+        "en": "About",
+        "ru": "О проекте"
+    },
+    "showOnMap": {
+        "en": "Show on map",
+        "ru": "Показать на карте"
+    },
+    "share": {
+        "en": "Share",
+        "ru": "Поделиться"
+    },
+    "close": {
+        "en": "Close",
+        "ru": "Закрыть"
+    },
+    "namePlaceholder": {
+        "en": "Unknown",
+        "ru": "Неизвестно"
+    }
+}

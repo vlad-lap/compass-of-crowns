@@ -1,10 +1,11 @@
 import { Pipe, PipeTransform } from '@angular/core';
 import { LocationData } from '../models';
 import { Store } from '@ngxs/store';
-import { GeodataState } from '../store/geodata';
+import { GeodataState, LanguagesState } from '../store';
 
 @Pipe({
     name: 'area',
+    pure: false,
 })
 export class AreaPipe implements PipeTransform {
     constructor(private store: Store) {}
@@ -22,6 +23,7 @@ export class AreaPipe implements PipeTransform {
 
     private featureNameById(id: string): string {
         const feature = this.store.selectSnapshot(GeodataState.byId(id));
-        return feature?.properties.name;
+        const language = this.store.selectSnapshot(LanguagesState.language);
+        return feature?.properties[`name_${language}`] ?? feature?.properties.name;
     }
 }

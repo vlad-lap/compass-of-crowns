@@ -1,27 +1,42 @@
 import { FeatureCollection } from 'geojson';
 import { FeatureData, LocationData, LocationType } from '../models';
-import { groupBy, uniq, uniqBy } from 'lodash';
+import { flatten, groupBy, uniq, uniqBy } from 'lodash';
+import { AVAILABLE_LANGUAGES, DEFAULT_LANGUAGE } from '../constants';
 
 const LOCATION_TYPES: Record<string, LocationType> = {
     City: 'cities',
     Town: 'towns',
     Castle: 'castles',
     Ruin: 'ruins',
+    Settlement: 'settlements',
     Other: 'other',
 };
 
 function buildSearchKeys(name: string): string[] {
+    if (!name) {
+        return [];
+    }
     const normalized = name.toLowerCase().trim();
-    return uniq([normalized, normalized.replace(/'/g, '')]);
+    return uniq([normalized, normalized.replace(/'/g, ''), normalized.replace(/-/g, ' ')]);
+}
+
+function buildLocalizedSearchKeys(feature: FeatureData): string[] {
+    const nameKeys = [
+        'name',
+        ...AVAILABLE_LANGUAGES
+            .filter(lang => lang !== DEFAULT_LANGUAGE)
+            .map(lang => `name_${lang}`),
+    ];
+
+    return flatten(nameKeys.map(key => buildSearchKeys(feature[key])));
 }
 
 export function getSearchOptions({ features }: FeatureCollection): FeatureData[] {
     const options = features
         .filter(({ properties }) => !!properties?.name)
-        .map(({ properties: { id, name } }) => ({
-            id,
-            name,
-            searchKeys: buildSearchKeys(name),
+        .map(({ properties }) => ({
+            ...properties as FeatureData,
+            searchKeys: buildLocalizedSearchKeys(properties as FeatureData),
         }));
 
     return uniqBy(options, 'id');
@@ -32,11 +47,9 @@ export function getLocationsSearchOptions({
 }: FeatureCollection): Record<string, LocationData[]> {
     const locations: LocationData[] = features
         .filter(({ properties }) => !!properties?.name)
-        .map(({ properties: { id, name, type } }) => ({
-            id,
-            name,
-            type,
-            searchKeys: buildSearchKeys(name),
+        .map(({ properties }) => ({
+            ...properties as LocationData,
+            searchKeys: buildLocalizedSearchKeys(properties as LocationData),
         }));
 
     const uniqueLocations = uniqBy(locations, 'id');

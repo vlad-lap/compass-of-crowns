@@ -1,13 +1,15 @@
-import { readFileSync, writeFileSync, mkdirSync } from 'fs';
+import { mkdirSync } from 'fs';
 import { fileURLToPath } from 'url';
 import { dirname, join } from 'path';
-import { EXCLUDED_IDS, EXTRA_LOCATIONS, GREAT_CASTLES } from './constants.mjs';
+import _ from 'lodash';
+import { EXCLUDED_IDS } from './constants.mjs';
 import { splitByType } from './split-by-type.mjs';
 import { addContinentId, filterGeodata, getContainingPolygonId, getLocationContinentId, mapGeodata } from './geodata-utils.mjs';
 import { generateIds } from './generate-ids.mjs';
 import { buildKingdomBorders } from './build-kingdom-borders.mjs';
 import { smoothPolygon } from './smooth.mjs';
-import _ from 'lodash';
+import { readJSON, writeJSON } from './json-utils.mjs';
+import { addLanguageProperties, syncDescriptions, syncLanguageDict } from './language.mjs';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const VENDORS = join(__dirname, '..', 'vendors');
@@ -15,19 +17,12 @@ const GEODATA = join(__dirname, '..', 'geodata');
 const DATA = join(__dirname, '..', 'data');
 const RAW_DATA = join(DATA, 'raw');
 
-function readJSON(path) {
-    return JSON.parse(readFileSync(path, 'utf8'));
-}
-
-function writeJSON(path, json) {
-    writeFileSync(path, JSON.stringify(json, null, 2));
-}
-
-function readGeoJSON(fileName) {
+function readGeoJSON(fileName, languageFileName) {
     const collection = readJSON(join(VENDORS, fileName), 'utf8');
     const collectionWithIds = generateIds(collection);
+    const collectionWithLanguages = addLanguageProperties(collectionWithIds, languageFileName);
     return filterGeodata(
-        collectionWithIds,
+        collectionWithLanguages,
         feature => !EXCLUDED_IDS.includes(feature.properties.id),
     );
 }
@@ -37,34 +32,59 @@ function writeGeoJSON(fileName, collection) {
     console.log(`${fileName}: ${collection.features.length} features`);
 }
 
-function processGeoJSON(fileName, { filterFn, mapFn } = {}) {
-    const collection = readGeoJSON(fileName);
+function getFeatureProperties(collection) {
+    return collection.features.map(feature => feature.properties);
+}
+
+function writeRawDataJSON(fileName, collection) {
+    const dataItems = getFeatureProperties(collection);
+    writeJSON(join(RAW_DATA, fileName), dataItems);
+    const named = dataItems.filter(item => !!item.name);
+    const withDescriptions = dataItems.filter(item => !!item.description);
+    const translated = dataItems.filter(item => !!item.name_ru);
+    console.log(
+        `${fileName}: ${dataItems.length} features, ${named.length} named, ${translated.length}/${named.length} translated, ${withDescriptions.length}/${named.length} with descriptions`,
+    );
+    return dataItems;
+}
+
+function syncLanguage(collection, languageFileName) {
+    const rawData = writeRawDataJSON(languageFileName, collection);
+    syncLanguageDict(rawData, languageFileName);
+}
+
+function processGeoJSON(fileName, languageFileName, { filterFn, mapFn } = {}) {
+    const collection = readGeoJSON(fileName, languageFileName);
     const filtered = filterFn ? filterGeodata(collection, filterFn) : collection;
     const mapped = mapFn ? mapGeodata(filtered, mapFn) : filtered;
     writeGeoJSON(fileName, mapped);
+    syncLanguage(mapped, languageFileName);
     return mapped;
 }
 
 mkdirSync(GEODATA, { recursive: true });
+mkdirSync(RAW_DATA, { recursive: true });
 
-const continents = processGeoJSON('got_continents.geojson');
+const continents = processGeoJSON('got_continents.geojson', 'continents.json');
 
-const islands = processGeoJSON('got_islands.geojson', {
+const islands = processGeoJSON('got_islands.geojson', 'islands.json', {
     mapFn: feature => addContinentId(feature, continents)
 });
-const kingdoms = processGeoJSON('got_political.geojson');
+const kingdoms = processGeoJSON('got_political.geojson', 'kingdoms.json');
 
 const borders = buildKingdomBorders(kingdoms, continents, islands);
 writeGeoJSON('got_political_borders.geojson', borders);
 
-processGeoJSON('got_lakes.geojson');
-processGeoJSON('got_rivers.geojson');
-processGeoJSON('got_roads.geojson');
+processGeoJSON('got_lakes.geojson', 'lakes.json');
+processGeoJSON('got_rivers.geojson', 'rivers.json');
+processGeoJSON('got_roads.geojson', 'roads.json');
 
-const landscape = readGeoJSON('got_landscape.geojson');
+const landscape = readGeoJSON('got_landscape.geojson', 'landscape.json');
+syncLanguage(landscape, 'landscape.json');
 const landscapeByType = splitByType(landscape);
 
-const regions = readGeoJSON('got_regions.geojson');
+const regions = readGeoJSON('got_regions.geojson', 'regions.json');
+syncLanguage(regions, 'regions.json');
 const regionsByType = splitByType(regions);
 
 const combinedTypes = ['mountain', 'forest'];
@@ -111,7 +131,7 @@ for (const [type, collection] of Object.entries({ ...landscapeByType, ...regions
 
 const descriptions = readJSON(join(DATA, 'descriptions.json'));
 
-const theWall = processGeoJSON('got_wall.geojson', {
+const theWall = processGeoJSON('got_wall.geojson', 'the-wall.json', {
     mapFn: feature => ({
         ...feature,
         properties: {
@@ -125,12 +145,11 @@ const theWall = processGeoJSON('got_wall.geojson', {
     }),
 });
 
-const locations = processGeoJSON('got_locations.geojson', {
+const locations = processGeoJSON('got_locations.geojson', 'locations.json', {
     mapFn: feature => ({
         ...feature,
         properties: {
             ...feature.properties,
-            size: feature.properties.size,
             continentId: getLocationContinentId(feature, continents, islands),
             kingdomId: getContainingPolygonId(feature, kingdoms),
             regionId: getContainingPolygonId(feature, namedRegions),
@@ -140,27 +159,8 @@ const locations = processGeoJSON('got_locations.geojson', {
     }),
 });
 
-mkdirSync(RAW_DATA, { recursive: true });
-
-function writeRawDataJSON(fileName, dataItems) {
-    writeJSON(join(RAW_DATA, fileName), dataItems);
-    const withDescriptions = dataItems.filter(item => !!item.description)
-    console.log(
-        `${fileName}: ${withDescriptions.length}/${dataItems.length} features with descriptions`,
-    );
-}
-
-const wallData = theWall.features.map(feature => feature.properties);
-writeRawDataJSON('the-wall.json', wallData);
-
-const locationsData = locations.features.map(feature => feature.properties);
-writeRawDataJSON('locations.json', locationsData);
-
-const descriptionsDict = [...wallData, ...locationsData]
-    .filter(({ name }) => !!name)
-    .reduce((dict, { id, description }) => ({
-        ...dict, [id]: description
-    }), {});
-writeJSON(join(DATA, 'descriptions.json'), descriptionsDict);
+const wallData = getFeatureProperties(theWall);
+const locationsData = getFeatureProperties(locations);
+syncDescriptions([...wallData, ...locationsData])
 
 

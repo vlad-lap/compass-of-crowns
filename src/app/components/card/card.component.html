@@ -1,22 +1,24 @@
+@let ui = coreUi();
+
 <div class="card-header">
-    <h3>{{ data.name }}</h3>
+    <h3>{{ data | localize: 'name' }}</h3>
     <button
         matIconButton
-        aria-label="Go to location"
+        [aria-label]="ui.showOnMap"
         (click)="goToLocation$.next();"
     >
         <mat-icon>my_location</mat-icon>
     </button>
     <button
         matIconButton
-        aria-label="Share"
+        [aria-label]="ui.share"
         (click)="share()"
     >
         <mat-icon class="share-icon">ios_share</mat-icon>
     </button>
     <button
         matIconButton
-        aria-label="Close"
+        [aria-label]="ui.close"
         (click)="close()"
     >
         <mat-icon>close</mat-icon>
@@ -27,7 +29,7 @@
 
 <div class="card-subtitle">
     @if (data.type) {
-        <span>{{ data.type }}</span>
+        <span>{{ data | localize: 'type' }}</span>
 
         @if (area?.length) {
             <span class="bullet">&bull;</span>
@@ -43,4 +45,4 @@
     }
 </div>
 
-<div class="description">{{ data.description }}</div>
+<div class="description">{{ data | localize: 'description' }}</div>

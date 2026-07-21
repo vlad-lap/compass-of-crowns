@@ -40,6 +40,11 @@
                                 "glob": "**/*",
                                 "input": "data",
                                 "output": "data"
+                            },
+                            {
+                                "glob": "**/*",
+                                "input": "languages",
+                                "output": "languages"
                             }
                         ],
                         "styles": [

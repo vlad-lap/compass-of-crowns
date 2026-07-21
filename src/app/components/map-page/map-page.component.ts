@@ -25,6 +25,7 @@ import {
     MapLayerMouseEvent,
     MapMouseEvent,
     Popup,
+    SymbolLayerSpecification,
 } from 'maplibre-gl';
 import { Feature, FeatureCollection, MultiPolygon, Polygon, Position } from 'geojson';
 import { GEODATA_URLS } from '../../constants';
@@ -36,14 +37,14 @@ import {
     ZoomLevel,
 } from './constants';
 import {
-    FeatureData,
+    FeatureData, GeodataDict,
     GeodataType,
     LineGeodataType,
     LocationData,
     LocationTier,
     PolygonGeodataType,
 } from '../../models';
-import { GeodataState } from '../../store/geodata';
+import { GeodataState, LanguagesState } from '../../store';
 import {
     DEFAULT_LABEL_LAYOUT,
     DIM_OVERLAY_PAINT,
@@ -84,6 +85,7 @@ import { KeyValuePipe } from '@angular/common';
 import { MatBottomSheet, MatBottomSheetRef } from '@angular/material/bottom-sheet';
 import { CardComponent } from '../card/card.component';
 import { takeUntil } from 'rxjs';
+import { mapValues } from 'lodash';
 
 @Component({
     selector: 'coiaf-map-page',
@@ -105,6 +107,9 @@ import { takeUntil } from 'rxjs';
 export class MapPageComponent {
     protected readonly map = viewChild.required(MapComponent);
     protected readonly searchComponent = viewChild.required(MapSearchComponent);
+
+    protected readonly language = this.store.selectSignal(LanguagesState.language);
+    protected readonly coreUi = this.store.selectSignal(LanguagesState.coreUi);
 
     protected readonly cursorStyle = signal<string>('default');
 
@@ -205,8 +210,13 @@ export class MapPageComponent {
     protected readonly locationsFilter = LOCATIONS_FILTER;
     protected readonly locationsMinZoom = LOCATIONS_MIN_ZOOM;
 
-    protected readonly labelLayout = LABEL_LAYOUT;
-    protected readonly defaultLabelLayout = DEFAULT_LABEL_LAYOUT;
+    protected readonly labelLayout = computed<GeodataDict<SymbolLayerSpecification['layout']>>(
+        () =>
+            mapValues(LABEL_LAYOUT, layout => this.getLocalizedLabelLayout(layout)),
+    );
+    protected readonly defaultLabelLayout = computed<SymbolLayerSpecification['layout']>(
+        () => this.getLocalizedLabelLayout(DEFAULT_LABEL_LAYOUT)
+    );
     protected readonly labelPaint = LABEL_PAINT;
     protected readonly labelsMinZoom = LABELS_MIN_ZOOM;
     protected readonly locationLabelsFilter = LOCATION_LABELS_FILTER;
@@ -430,5 +440,13 @@ export class MapPageComponent {
         this.tooltipRef.setInput('location', location);
         this.tooltipRef.changeDetectorRef.detectChanges();
         return this.tooltipRef.location.nativeElement;
+    }
+
+    private getLocalizedLabelLayout(layout: SymbolLayerSpecification['layout']): SymbolLayerSpecification['layout'] {
+        const language = this.language();
+        return {
+            ...layout,
+            'text-field': ['coalesce', ['get', `name_${language}`], ['get', 'name']],
+        };
     }
 }
