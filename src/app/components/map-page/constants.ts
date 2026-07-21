@@ -67,7 +67,7 @@ export enum FontStyle {
 }
 
 export enum FontSize {
-    SM = 9,
+    SM = 10,
     MD = 12,
     LG = 14,
     XL = 18,

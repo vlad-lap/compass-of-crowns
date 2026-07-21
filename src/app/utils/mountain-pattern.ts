@@ -1,10 +1,12 @@
 const PATTERN_SIZE = 128;
-const POLYGON_COUNT = 40;
-const MIN_RADIUS = 15;
-const MAX_RADIUS = 33;
-const MIN_SHADE = 0.05;
+const POLYGON_COUNT = 30;
+const MIN_RADIUS = 10;
+const MAX_RADIUS = 20;
+const MIN_STRETCH = 3;
+const MAX_STRETCH = 4;
+const MIN_SHADE = 0.3;
 const MAX_SHADE = 0.5;
-const MID_GREY = '#7b766f';
+const BASE_COLOR = '#ada173';
 
 const LIGHT_ANGLE = Math.PI / 4;
 const HALF_PLANE_SIZE = MAX_RADIUS * 3;
@@ -45,11 +47,20 @@ function createRandomPolygon([cx, cy]: PatternPoint): PatternPoint[] {
     const sides = Math.random() < 0.5 ? 3 : 4;
     const radius = MIN_RADIUS + Math.random() * (MAX_RADIUS - MIN_RADIUS);
     const angleOffset = Math.random() * Math.PI * 2;
+    const stretch = MIN_STRETCH + Math.random() * (MAX_STRETCH - MIN_STRETCH);
+    const orientation = Math.random() * Math.PI * 2;
+    const cosOrientation = Math.cos(orientation);
+    const sinOrientation = Math.sin(orientation);
 
     return Array.from({ length: sides }, (_, index) => {
         const angle = angleOffset + (index / sides) * Math.PI * 2 + (Math.random() - 0.5) * 0.6;
         const pointRadius = radius * (0.6 + Math.random() * 0.4);
-        return [cx + Math.cos(angle) * pointRadius, cy + Math.sin(angle) * pointRadius];
+        const localX = Math.cos(angle) * pointRadius * stretch;
+        const localY = Math.sin(angle) * pointRadius;
+        return [
+            cx + localX * cosOrientation - localY * sinOrientation,
+            cy + localX * sinOrientation + localY * cosOrientation,
+        ];
     });
 }
 
@@ -69,10 +80,10 @@ function fillBeveledPolygon(
     context.translate(center[0], center[1]);
     context.rotate(LIGHT_ANGLE);
 
-    context.fillStyle = shadeColor(MID_GREY, amount);
+    context.fillStyle = shadeColor(BASE_COLOR, amount);
     context.fillRect(-HALF_PLANE_SIZE, -HALF_PLANE_SIZE, HALF_PLANE_SIZE, HALF_PLANE_SIZE * 2);
 
-    context.fillStyle = shadeColor(MID_GREY, -amount);
+    context.fillStyle = shadeColor(BASE_COLOR, -amount);
     context.fillRect(0, -HALF_PLANE_SIZE, HALF_PLANE_SIZE, HALF_PLANE_SIZE * 2);
 
     context.restore();
