@@ -1,5 +1,5 @@
 import {
-    ChangeDetectionStrategy, ChangeDetectorRef,
+    ChangeDetectionStrategy,
     Component,
     DestroyRef,
     ElementRef,
@@ -22,7 +22,7 @@ import { map, Observable, startWith } from 'rxjs';
 import { FeatureData, GeodataType, LocationType } from '../../models';
 import { flatten, isEmpty, mapValues, omitBy } from 'lodash';
 import { CommonModule, KeyValue, Location } from '@angular/common';
-import { MatButton, MatIconButton } from '@angular/material/button';
+import { MatIconButton } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { LocalizePipe, SortByPipe } from '../../pipes';
 import { matchesSearch } from '../../utils';
@@ -73,7 +73,6 @@ const OPTIONS_GROUP_ORDER: OptionGroup[] = [
         MatOption,
         MatIconButton,
         SortByPipe,
-        MatButton,
         LocalizePipe,
     ],
     templateUrl: './map-search.component.html',
@@ -107,7 +106,6 @@ export class MapSearchComponent implements OnInit {
         private location: Location,
         private destroyRef: DestroyRef,
         private title: Title,
-        private cdr: ChangeDetectorRef,
     ) {}
 
     ngOnInit(): void {
@@ -154,9 +152,10 @@ export class MapSearchComponent implements OnInit {
 
         this.store.dispatch(new SetLanguage(AVAILABLE_LANGUAGES[nextIndex]));
 
-        const value = this.searchControl.value;
+        const value = this.searchControl.value as FeatureData;
         this.searchControl.reset('', { emitEvent: false });
         this.searchControl.patchValue(value, { emitEvent: false });
+        this.setTitle(value);
     }
 
     private search(value: FeatureData): void {
@@ -177,7 +176,7 @@ export class MapSearchComponent implements OnInit {
     }
 
     private setTitle(value: FeatureData): void {
-        const title = value ? `${value.name} | ${APP_TITLE}` : APP_TITLE;
+        const title = value ? `${this.displayFn(value)} | ${APP_TITLE}` : APP_TITLE;
         this.title.setTitle(title);
     }
 
